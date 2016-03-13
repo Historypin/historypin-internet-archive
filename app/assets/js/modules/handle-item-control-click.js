@@ -31,6 +31,11 @@ module.exports = function handleItemControlClick( evt ) {
     app_data.current_item_index += 1;
   }
 
+  if ( app_data.current_item_index === app_data.api_result.count ) {
+    app_data.current_item_index -= 1;
+    return;
+  }
+
   if ( app_data.current_item_index === app_data.items.length - 1 ) {
     callApi( app_data );
     return;

@@ -6,8 +6,8 @@
 <p id="item-control" class="item-control">
   {{! state-library-of-new-south-wales-s-collection }}
 
-  <button title="previous" data-action="previous"><< previous</button>
-  <button title="next" data-action="next"> next >></button>
+  <button title="previous" data-action="previous" disabled><< previous</button>
+  <button title="next" data-action="next" disabled> next >></button>
   <br>
   <span id="project" class="project"></span>
   <br>
