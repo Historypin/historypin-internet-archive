@@ -1,0 +1,3 @@
+{{{ message }}}
+{{# error.status }}<pre>http status code: {{ error.status }}</pre>{{/ error.status }}
+{{# error.stack }}<pre>{{ error.stack }}</pre>{{/ error.stack }}

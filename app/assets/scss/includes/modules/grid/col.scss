@@ -1,0 +1,10 @@
+.col-2 {
+  width: 49%;
+  float: left;
+  margin-right: 2%;
+  overflow: auto;
+}
+
+.col-2 ~ .col-2 {
+  margin-right: 0;
+}

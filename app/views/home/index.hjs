@@ -1,0 +1,31 @@
+{{> html-open }}
+<h1>historypin internet archive</h1>
+<p>an application that allows one to upload historypin collections to the internet archive</p>
+{{> form-search }}
+
+<p id="item-control" class="item-control">
+  {{! state-library-of-new-south-wales-s-collection }}
+
+  <button title="previous" data-action="previous"><< previous</button>
+  <button title="next" data-action="next"> next >></button>
+  <br>
+  <span id="project" class="project"></span>
+  <br>
+  page <span id="current-page">0</span>, limit per page <span id="items-per-page-limit">0</span>
+  <br>
+  item <span id="current-item">0</span> of <span id="total-items">0</span>
+</p>
+
+<div class="row">
+  <div class="col-2">
+    <h2>historypin metadata</h2>
+    <table id="historypin-metadata" class="table table-striped"></table>
+  </div>
+
+  <div class="col-2">
+    <h2>internet archive metadata</h2>
+    <table id="internet-archive-metadata" class="table table-striped"></table>
+  </div>
+</div>
+
+{{> html-close }}

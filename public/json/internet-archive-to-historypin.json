@@ -1,0 +1,196 @@
+{
+  "collection": {
+    "formats-expected": [
+      "text"
+    ],
+    "value": "historypin"
+  },
+  "contributor": {
+    "source-properties": [
+      "profile_url",
+      "username"
+    ],
+    "formats-expected": [
+      "text",
+      "html"
+    ],
+    "value-templates": [
+      "Added to Historypin by <a href=\"%profile_url%\" title=\"%username%\">%username%</a>"
+    ]
+  },
+  "coverage": {
+    "source-properties": [
+      "geo_tags",
+      "lat",
+      "lng"
+    ],
+    "formats-expected": [
+      "text"
+    ],
+    "value-templates": [
+      "%geo_tags% (%lat%, %lng%)"
+    ]
+  },
+  "creator": {
+    "source-properties": [
+      "author",
+      "creator"
+    ],
+    "formats-expected": [
+      "text"
+    ]
+  },
+  "credits": {
+    "formats-expected": [
+      "text",
+      "html"
+    ],
+    "value": "This item was contributed to the <a href=\"https://historypin.org\" title=\"Historypin\">Historypin</a> community"
+  },
+  "custom-fields": [
+    {
+      "hp-dateSubmitted": {
+        "source-properties": [
+          "date_created"
+        ]
+      }
+    },
+    {
+      "hp-lat": {
+        "source-properties": [
+          "lat"
+        ],
+        "formats-expected": [
+          "text"
+        ],
+        "value-templates": [
+          "%lat%"
+        ]
+      }
+    },
+    {
+      "hp-lng": {
+        "source-properties": [
+          "lng"
+        ],
+        "formats-expected": [
+          "text"
+        ],
+        "value-templates": [
+          "%lng%"
+        ]
+      }
+    },
+    {
+      "hp-range": {
+      }
+    },
+    {
+      "hp-geo-tags": {
+      }
+    }
+  ],
+  "date": {
+    "source-properties": [
+      "date_taken",
+      "date",
+      "date_from",
+      "date_to"
+    ],
+    "formats-expected": [
+      "ISO-8601"
+    ]
+  },
+  "description": {
+    "source-properties": [
+      "description",
+      "desc"
+    ],
+    "formats-expected": [
+      "text",
+      "html"
+    ]
+  },
+  "identifier": {
+
+  },
+  "language": {
+    "formats-expected": [
+      "MARC21-language-codes"
+    ]
+  },
+  "licenseurl": {
+    "source-properties": [
+      "license",
+      "license_type"
+    ],
+    "formats-expected": [
+      "creative-commons-url"
+    ]
+  },
+  "mediatype": {
+    "source-properties": [
+      "type"
+    ],
+    "formats-expected": [
+      "audio",
+      "collection",
+      "data",
+      "etree",
+      "image",
+      "movies",
+      "software",
+      "web"
+    ]
+  },
+  "notes": {
+    "source-properties": [
+      "link",
+      "source",
+      "identifier"
+    ],
+    "value-templates": [
+      "<a href=\"%source%\" title=\"More information\">More information</a>",
+      "Item originally identified by contributor as %identifier%"
+    ],
+    "formats-expected": [
+      "text",
+      "html"
+    ]
+  },
+  "publisher": {
+    "formats-expected": [
+      "text"
+    ],
+    "value": "Historypin"
+  },
+  "rights": {
+    "source-properties": [
+      "copyright",
+      "rights_statement"
+    ],
+    "formats-expected": [
+      "text",
+      "html"
+    ]
+  },
+  "subject": {
+    "source-properties": [
+      "tags",
+      "all_tags",
+      "tag_items"
+    ],
+    "formats-expected": [
+      "text",
+      "library-of-congress-subject-headings"
+    ]
+  },
+  "title": {
+    "source-properties": [
+      "title"
+    ],
+    "formats-expected": [
+      "text"
+    ]
+  }
+}

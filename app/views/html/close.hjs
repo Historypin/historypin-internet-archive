@@ -1,0 +1,5 @@
+  {{# close.script }}<script>{{{ close.script }}}</script>{{/close.script}}{{# development }}
+  <script src="/js/app.js"></script>{{/ development }}{{^ development }}
+  <script src="/js/app.min.js"></script>{{/ development }}
+</body>
+</html>

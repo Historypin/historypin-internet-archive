@@ -1,0 +1,3 @@
+<form id="form-search">
+  <input type="search" name="search" title="search" class="form-control input-search icon-search" placeholder="enter a project slug" autofocus />
+</form>

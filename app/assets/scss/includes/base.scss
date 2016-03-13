@@ -1,0 +1,19 @@
+html {
+  font-family: $font-family;
+  font-size: 14px;
+  color: $gray;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-family-headings;
+}
+
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+  background-color: transparent;
+}
+
+td, th {
+  padding: 0;
+}
