@@ -5,8 +5,7 @@
  */
 module.exports = function setupDynamicAppData( app_data ) {
   // items
-    app_data.pin_ids = [];
-    app_data.pin_details = [];
+    app_data.items = [];
     app_data.current_item_index = 0;
     app_data.current_page = 0;
 

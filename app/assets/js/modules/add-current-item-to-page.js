@@ -20,6 +20,16 @@ addInternetArchiveMetadata = require( './add-internet-archive-metadata' );
 module.exports = function addCurrentItemToPage( app_data ) {
   var hp_item;
 
+  if ( !app_data.items[ app_data.current_item_index ] ) {
+    console.warn( 'addCurrentItemToPage(): app_data.items[ app_data.current_item_index ] does not exist' );
+    return;
+  }
+
+  if ( !( app_data.items[ app_data.current_item_index ].details instanceof Object ) ) {
+    console.warn( 'addCurrentItemToPage(): app_data.items[ app_data.current_item_index ].details not provided as an Object' );
+    return;
+  }
+
   hp_item = app_data.items[ app_data.current_item_index ].details;
 
   addFixedItemProperties( hp_item );

@@ -28,7 +28,8 @@ module.exports = function handleGetProjectPinIds( xhr, app_data ) {
     return;
   }
 
-  app_data.items = response.items;
+  app_data.items = app_data.items.concat( response.items );
+  app_data.current_page += 1;
 
   if ( typeof response.count === 'number' && !isNaN( response.count ) ) {
     app_data.count = response.count;
