@@ -52,7 +52,7 @@ module.exports = function ( req, res, next ) {
   options.project = req.query.project.trim();
   delete req.query.project;
 
-  options.api_endpoint = 'get-map';
+  options.api_endpoint = 'get-pin';
   options.qs = req.query;
 
   getApiPromise( req, options )

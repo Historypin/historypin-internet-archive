@@ -3,18 +3,18 @@
 /**
  * module variables
  */
+var getDefaultContext;
 var getGenericPageContext;
 var getHomePageContext;
 var path;
-var setLocale;
 
 /**
- * variable assignments
+ * module dependencies
  */
 path = require( 'path' );
+getDefaultContext = require( path.join( __dirname, '..', '..', 'contexts', 'default' ) );
 getGenericPageContext = require( path.join( __dirname, '..', '..', 'contexts', 'pages', 'generic' ) );
 getHomePageContext = require( path.join( __dirname, '..', '..', 'contexts', 'pages', 'home' ) );
-setLocale = require( 'node-helpers' ).setLocale;
 
 /**
  * @param {IncomingMessage} req
@@ -27,14 +27,9 @@ setLocale = require( 'node-helpers' ).setLocale;
 module.exports = function getIndex( req, res, next ) {
   var context;
 
-  setLocale( req );
-
-  context = {};
-  context.partials = {};
-
+  context = getDefaultContext( req, context );
   context = getGenericPageContext( req, context );
   context = getHomePageContext( context );
-  context.template = context.partials.home;
 
   res.render( context.template, context );
 };

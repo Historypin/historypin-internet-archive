@@ -10,8 +10,8 @@ var setupDynamicAppData;
 /**
  * module dependencies
  */
-setupStaticAppData = require( './modules/setup-static-app-data' );
-setupDynamicAppData = require( './modules/setup-dynamic-app-data' );
+setupStaticAppData = require( './modules/setup-app-data-static' );
+setupDynamicAppData = require( './modules/setup-app-data-dynamic' );
 
 // app setup
 app_data = {};

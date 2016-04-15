@@ -5,10 +5,10 @@
  */
 module.exports = function setupDynamicAppData( app_data ) {
   // items
-    app_data.items = [];
+    app_data.pin_ids = [];
+    app_data.pin_details = [];
     app_data.current_item_index = 0;
     app_data.current_page = 0;
-    app_data.items_per_page_limit = 24;
 
   // setup item control initial state
     app_data.item_control.previous.disabled = true;

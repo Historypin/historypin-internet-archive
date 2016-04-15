@@ -1,3 +1,4 @@
 <form id="form-search">
+  state-library-of-new-south-wales-s-collection
   <input type="search" name="search" title="search" class="form-control input-search icon-search" placeholder="enter a project slug" autofocus />
 </form>

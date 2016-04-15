@@ -16,7 +16,8 @@ updateMetadata = require( './update-metadata' );
  * @returns {string}
  */
 function getUrl( app_data ) {
-  return '/ajax/get-mapping?project=' + app_data.project +
+  return '/ajax/get-mapping' +
+    '?project=' + app_data.project +
     '&paging=' + ( app_data.current_page + 1 ) +
     '&limit=' + app_data.items_per_page_limit;
 }

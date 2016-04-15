@@ -6,7 +6,7 @@
 var path;
 
 /**
- * variable assignments
+ * module dependencies
  */
 path = require( 'path' );
 
@@ -14,9 +14,10 @@ path = require( 'path' );
  * @param {Object} context
  * @returns {*}
  */
-module.exports = function getIndexPageContext( context ) {
+module.exports = function getHomePageContext( context ) {
   context.partials.home = path.join( __dirname, '..', '..', 'views', 'home' );
   context.partials[ 'form-search' ] = path.join( __dirname, '..', '..', 'views', 'home', 'form-search' );
+  context.template = context.partials.home;
 
   return context;
 };

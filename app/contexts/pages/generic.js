@@ -6,7 +6,7 @@
 var path;
 
 /**
- * variable assignments
+ * module dependencies
  */
 path = require( 'path' );
 
@@ -19,11 +19,6 @@ path = require( 'path' );
 module.exports = function getGenericPageContext( req, context ) {
   context.partials[ 'html-open' ] = path.join( __dirname, '..', '..', 'views', 'html', 'open' );
   context.partials[ 'html-close' ] = path.join( __dirname, '..', '..', 'views', 'html', 'close' );
-  context.lang = req.session.lang;
-
-  if ( process.env.NODE_ENV === 'development' ) {
-    context.development = true;
-  }
 
   return context;
 };

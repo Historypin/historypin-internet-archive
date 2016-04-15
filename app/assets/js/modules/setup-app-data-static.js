@@ -22,6 +22,9 @@ lib = require( 'node-front-end-lib' );
  * @param {Object} app_data
  */
 module.exports = function setupStaticAppData( app_data ) {
+  // api
+    app_data.items_per_page_limit = 24;
+
   // form
     app_data.form = document.getElementById( 'form-search' );
     app_data.search = lib.getFieldByName( 'search' );
