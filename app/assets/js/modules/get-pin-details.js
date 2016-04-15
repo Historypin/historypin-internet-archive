@@ -17,7 +17,7 @@ lib = require( 'node-front-end-lib' );
 function getUrl( app_data ) {
   return '/ajax/get-pin' +
     '?project=' + app_data.project +
-    '&id=' + app_data.items[0][0];
+    '&id=' + app_data.items[ app_data.current_item_index ][ 0 ];
 }
 
 /**

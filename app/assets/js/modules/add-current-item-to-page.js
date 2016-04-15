@@ -20,10 +20,9 @@ addInternetArchiveMetadata = require( './add-internet-archive-metadata' );
 module.exports = function addCurrentItemToPage( app_data ) {
   var hp_item;
 
-  //hp_item = app_data.items[ app_data.current_item_index ];
-  hp_item = app_data.current_item;
-  addFixedItemProperties( hp_item );
+  hp_item = app_data.items[ app_data.current_item_index ].details;
 
+  addFixedItemProperties( hp_item );
   addHistorypinMetadata( hp_item, app_data );
   addInternetArchiveMetadata( hp_item, app_data );
 };
