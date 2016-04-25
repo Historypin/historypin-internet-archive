@@ -12,7 +12,7 @@ var updateItemControls;
  */
 addCurrentItemToPage = require( './add-current-item-to-page' );
 lib = require( 'node-front-end-lib' );
-updateItemControls = require('./update-item-controls');
+updateItemControls = require( './update-item-controls' );
 
 /**
  * @param {XMLHttpRequest} xhr
@@ -25,8 +25,18 @@ module.exports = function handleGetPinDetails( xhr, app_data ) {
   response = lib.extractXhrResponse( xhr );
   response = JSON.parse( response );
 
+  response.id = app_data.current_id;
+
   if ( response instanceof Object ) {
-    app_data.items[ app_data.current_item_index ].details = response;
+    if ( Object.keys instanceof Function ) {
+      app_data.items[ app_data.current_item_index ].details = {};
+
+      Object.keys( response ).sort().forEach( function ( key ) {
+        app_data.items[ app_data.current_item_index ].details[ key ] = response[ key ];
+      } );
+    } else {
+      app_data.items[ app_data.current_item_index ].details = response;
+    }
   }
 
   updateItemControls( app_data );

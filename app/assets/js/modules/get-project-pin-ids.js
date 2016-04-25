@@ -4,13 +4,11 @@
  * module variables
  */
 var lib;
-var updateMetadata;
 
 /**
  * module dependencies
  */
 lib = require( 'node-front-end-lib' );
-updateMetadata = require( './update-metadata' );
 
 /**
  * @link http://v76-beta-1.historypin-hrd.appspot.com/resources/docs/api/site/items/map/index.html

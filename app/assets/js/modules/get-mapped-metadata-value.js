@@ -1,6 +1,87 @@
 'use strict';
 
 /**
+ * module variables
+ */
+var template;
+
+function getValueMappedFromObject( hp_item, source_property ) {
+  var i;
+  var value;
+  var search;
+  var source_property_array;
+
+  source_property_array = source_property.split( '.' );
+
+  for ( i = 0; i < source_property_array.length; i += 1 ) {
+    if ( typeof value === 'undefined' ) {
+      value = hp_item[ source_property_array[ i ] ];
+    } else {
+      value = value[ source_property_array[ i ] ];
+    }
+  }
+
+  if ( template ) {
+    search = new RegExp( '%' + source_property + '%', 'g' );
+    template = template.replace( search, value ) + ' ';
+    value = template;
+  } else {
+    value += ' ';
+  }
+
+  return value;
+}
+
+function getValueMapped( hp_item, source_property ) {
+  var i;
+  var result;
+  var search;
+
+  result = '';
+
+  if ( typeof hp_item[ source_property ] === 'undefined' ) {
+    return result;
+  }
+
+  if ( typeof hp_item[ source_property ] === 'string' || typeof hp_item[ source_property ] === 'number' ) {
+    if ( template ) {
+      search = new RegExp( '%' + source_property + '%', 'g' );
+      template = template.replace( search, hp_item[ source_property ] ) + ' ';
+      result = template;
+    } else {
+      result += hp_item[ source_property ] + ' ';
+    }
+  }
+
+  return result;
+}
+
+function setTemplate( ia_item ) {
+  var i;
+  var templates;
+
+  template = undefined;
+
+  if ( !( ia_item[ 'value-templates' ] instanceof Array ) ) {
+    return;
+  }
+
+  templates = ia_item[ 'value-templates' ];
+
+  for ( i = 0; i < templates.length; i += 1 ) {
+    if ( typeof templates[ i ] !== 'string' ) {
+      continue;
+    }
+
+    if ( typeof template === 'undefined' ) {
+      template = templates[ i ];
+    } else {
+      template += ' ' + templates[ i ];
+    }
+  }
+}
+
+/**
  * @todo refine logic and handle expected formats
  *
  * @param {Object} hp_item
@@ -9,15 +90,10 @@
  */
 module.exports = function getMappedMetadataValue( hp_item, ia_item ) {
   var i;
-  var j;
   var result;
   var source_property;
-  var templates;
-  var template;
-  var search;
 
   result = '';
-  templates = [];
 
   if ( !( hp_item instanceof Object ) ) {
     return result;
@@ -27,12 +103,10 @@ module.exports = function getMappedMetadataValue( hp_item, ia_item ) {
     return result;
   }
 
-  if ( ia_item[ 'value-templates' ] instanceof Array ) {
-    templates = ia_item[ 'value-templates' ];
-  }
+  setTemplate( ia_item );
 
   if ( typeof ia_item.value === 'string' ) {
-    result += ia_item.value;
+    result = ia_item.value;
   } else if ( ia_item[ 'source-properties' ] instanceof Array ) {
     for ( i = 0; i < ia_item[ 'source-properties' ].length; i += 1 ) {
       source_property = ia_item[ 'source-properties' ][ i ];
@@ -41,29 +115,18 @@ module.exports = function getMappedMetadataValue( hp_item, ia_item ) {
         continue;
       }
 
-      if ( typeof hp_item[ source_property ] !== 'string' ) {
-        continue;
-      }
-
-      if ( typeof template === 'undefined' ) {
-        for ( j = 0; j < templates.length; j += 1 ) {
-          if ( typeof templates[ j ] !== 'string' ) {
-            continue;
-          }
-
-          if ( typeof template === 'undefined' ) {
-            template = templates[ j ];
-          } else {
-            template += ' ' + templates[ j ];
-          }
+      if ( source_property.indexOf( '.' ) !== -1 ) {
+        if ( template ) {
+          result = getValueMappedFromObject( hp_item, source_property );
+        } else {
+          result += getValueMappedFromObject( hp_item, source_property );
         }
-      }
-
-      if ( template ) {
-        search = new RegExp( '%' + source_property + '%', 'g' );
-        result = template = template.replace( search, hp_item[ source_property ] ) + ' ';
       } else {
-        result += hp_item[ source_property ] + ' ';
+        if ( template ) {
+          result = getValueMapped( hp_item, source_property );
+        } else {
+          result += getValueMapped( hp_item, source_property );
+        }
       }
     }
   }

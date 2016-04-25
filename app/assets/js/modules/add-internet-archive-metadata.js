@@ -15,9 +15,12 @@ getMappedMetadataValue = require( './get-mapped-metadata-value' );
  * @param app_data
  */
 module.exports = function addInternetArchiveMetadata( hp_item, app_data ) {
+  var custom_field;
+  var custom_property;
+  var fields;
   var html;
+  var i;
   var ia_property;
-  var content;
 
   html = '';
 
@@ -36,12 +39,19 @@ module.exports = function addInternetArchiveMetadata( hp_item, app_data ) {
       continue;
     }
 
-    if ( ia_property === 'custom-fields' ) {
+    fields = app_data.mapping[ ia_property ];
+
+    if ( fields instanceof Array ) {
+      for ( i = 0; i < fields.length; i += 1 ) {
+        custom_field = fields[ i ];
+        custom_property = Object.keys( custom_field )[0];
+        html += '<tr><td>' +  custom_property + '</td><td>' + getMappedMetadataValue( hp_item, custom_field[ custom_property ] ) + '</td></tr>';
+      }
+
       continue;
     }
 
-    content = '<tr><td>' + ia_property + '</td><td>' + getMappedMetadataValue( hp_item, app_data.mapping[ ia_property ] ) + '</td></tr>';
-    html += content;
+    html += '<tr><td>' + ia_property + '</td><td>' + getMappedMetadataValue( hp_item, app_data.mapping[ ia_property ] ) + '</td></tr>';
   }
 
   html += '</tbody>';

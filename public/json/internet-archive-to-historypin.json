@@ -7,28 +7,28 @@
   },
   "contributor": {
     "source-properties": [
-      "profile_url",
-      "username"
+      "user_id",
+      "user_name"
     ],
     "formats-expected": [
       "text",
       "html"
     ],
     "value-templates": [
-      "Added to Historypin by <a href=\"%profile_url%\" title=\"%username%\">%username%</a>"
+      "Added to Historypin by <a href=\"http://www.historypin.org/channels/view/%user_id%\" title=\"%user_name%\">%user_name%</a>"
     ]
   },
   "coverage": {
     "source-properties": [
-      "geo_tags",
-      "lat",
-      "lng"
+      "location.geo_tags",
+      "location.lat",
+      "location.lng"
     ],
     "formats-expected": [
       "text"
     ],
     "value-templates": [
-      "%geo_tags% (%lat%, %lng%)"
+      "%location.geo_tags% (%location.lat%, %location.lng%)"
     ]
   },
   "creator": {
@@ -45,51 +45,8 @@
       "text",
       "html"
     ],
-    "value": "This item was contributed to the <a href=\"https://historypin.org\" title=\"Historypin\">Historypin</a> community"
+    "value": "This item was contributed to the <a href=\"https://www.historypin.org\" title=\"Historypin\">Historypin</a> community"
   },
-  "custom-fields": [
-    {
-      "hp-dateSubmitted": {
-        "source-properties": [
-          "date_created"
-        ]
-      }
-    },
-    {
-      "hp-lat": {
-        "source-properties": [
-          "lat"
-        ],
-        "formats-expected": [
-          "text"
-        ],
-        "value-templates": [
-          "%lat%"
-        ]
-      }
-    },
-    {
-      "hp-lng": {
-        "source-properties": [
-          "lng"
-        ],
-        "formats-expected": [
-          "text"
-        ],
-        "value-templates": [
-          "%lng%"
-        ]
-      }
-    },
-    {
-      "hp-range": {
-      }
-    },
-    {
-      "hp-geo-tags": {
-      }
-    }
-  ],
   "date": {
     "source-properties": [
       "date_taken",
@@ -111,8 +68,47 @@
       "html"
     ]
   },
+  "hp-custom-fields": [
+    {
+      "hp-dateSubmitted": {
+        "source-properties": [
+          "date_added"
+        ]
+      }
+    },
+    {
+      "hp-lat": {
+        "source-properties": [
+          "location.lat"
+        ],
+        "formats-expected": [
+          "text"
+        ]
+      }
+    },
+    {
+      "hp-lng": {
+        "source-properties": [
+          "location.lng"
+        ],
+        "formats-expected": [
+          "text"
+        ]
+      }
+    },
+    {
+      "hp-range": {
+      }
+    },
+    {
+      "hp-geo-tags": {
+      }
+    }
+  ],
   "identifier": {
-
+    "source-properties": [
+      "id"
+    ]
   },
   "language": {
     "formats-expected": [

@@ -1,14 +1,30 @@
 'use strict';
 
 /**
- * module variables
+ * @param {string} property
+ * @param {Object} hp_item
+ * @returns {string}
  */
-var augmentItemMetadata;
+function getContentFromObject( property, hp_item ) {
+  var result;
+  var i;
 
-/**
- * module dependencies
- */
-augmentItemMetadata = require( './augment-item-metadata' );
+  result = '';
+
+  for ( i in hp_item[ property ] ) {
+    if ( !hp_item[ property ].hasOwnProperty( i ) ) {
+      continue;
+    }
+
+    if ( hp_item[ property ][ i ] instanceof Object ) {
+      console.log( property, hp_item[ property ][ i ] );
+    }
+
+    result += '<tr><td>' + property + '.' + i + '</td><td>' + hp_item[ property ][ i ] + '</td></tr>';
+  }
+
+  return result;
+}
 
 /**
  * @param {Object} hp_item
@@ -17,7 +33,6 @@ augmentItemMetadata = require( './augment-item-metadata' );
 module.exports = function addHistorypinMetadata( hp_item, app_data ) {
   var html;
   var property;
-  var sub_property;
   var content;
 
   html = '';
@@ -37,20 +52,12 @@ module.exports = function addHistorypinMetadata( hp_item, app_data ) {
       continue;
     }
 
-    augmentItemMetadata( property, hp_item );
+    content = '';
 
-    content = '<tr><td>' + property + '</td><td>' + hp_item[ property ] + '</td></tr>';
-
-    if ( hp_item[ property ] instanceof Object ) {
-      content = '';
-
-      for ( sub_property in hp_item[ property ] ) {
-        if ( !hp_item[ property ].hasOwnProperty( sub_property ) ) {
-          continue;
-        }
-
-        content += '<tr><td>' + property + '.' + sub_property + '</td><td>' + hp_item[ property ][ sub_property ] + '</td></tr>';
-      }
+    if ( typeof hp_item[ property ] === 'string' || typeof hp_item[ property ] === 'number' ) {
+      content = '<tr><td>' + property + '</td><td>' + hp_item[ property ] + '</td></tr>';
+    } else if ( hp_item[ property ] instanceof Object ) {
+      content = getContentFromObject( property, hp_item );
     }
 
     html += content;
