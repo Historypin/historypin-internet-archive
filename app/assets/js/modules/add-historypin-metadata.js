@@ -16,9 +16,9 @@ function getContentFromObject( property, hp_item ) {
       continue;
     }
 
-    if ( hp_item[ property ][ i ] instanceof Object ) {
-      console.log( property, hp_item[ property ][ i ] );
-    }
+    // if ( hp_item[ property ][ i ] instanceof Object ) {
+    //   console.log( property, hp_item[ property ][ i ] );
+    // }
 
     result += '<tr><td>' + property + '.' + i + '</td><td>' + hp_item[ property ][ i ] + '</td></tr>';
   }

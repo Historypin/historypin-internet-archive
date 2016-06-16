@@ -98,21 +98,41 @@
     },
     {
       "hp-range": {
+        "value": "100m"
       }
     },
     {
       "hp-geo-tags": {
+        "source-properties": [
+          "location.geo_tags"
+        ]
+      }
+    },
+    {
+      "hp-media-url": {
+        "source-properties": [
+          "id"
+        ],
+        "value-templates": [
+          "https://www.historypin.org//services/thumb/phid/%id%/dim/5000x5000"
+        ]
       }
     }
   ],
   "identifier": {
     "source-properties": [
       "id"
+    ],
+    "value-templates": [
+      "https://www.historypin.org/en/explore/pin/%id%"
     ]
   },
   "language": {
     "formats-expected": [
       "MARC21-language-codes"
+    ],
+    "source-properties": [
+      "lang"
     ]
   },
   "licenseurl": {
@@ -183,7 +203,7 @@
   },
   "title": {
     "source-properties": [
-      "title"
+      "caption"
     ],
     "formats-expected": [
       "text"
