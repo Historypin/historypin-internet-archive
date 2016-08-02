@@ -49,10 +49,7 @@
   },
   "date": {
     "source-properties": [
-      "date_taken",
-      "date",
-      "date_from",
-      "date_to"
+      "date"
     ],
     "formats-expected": [
       "ISO-8601"
@@ -114,7 +111,7 @@
           "id"
         ],
         "value-templates": [
-          "https://www.historypin.org//services/thumb/phid/%id%/dim/5000x5000"
+          "https://www.historypin.org//services/thumb/phid/%id%/dim/5000x5000/quality/90/"
         ]
       }
     }
@@ -137,8 +134,7 @@
   },
   "licenseurl": {
     "source-properties": [
-      "license",
-      "license_type"
+      "license_key"
     ],
     "formats-expected": [
       "creative-commons-url"
@@ -149,14 +145,7 @@
       "type"
     ],
     "formats-expected": [
-      "audio",
-      "collection",
-      "data",
-      "etree",
-      "image",
-      "movies",
-      "software",
-      "web"
+      "mediatype"
     ]
   },
   "notes": {

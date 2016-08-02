@@ -4,12 +4,24 @@
  * module variables
  */
 var template;
+var parseValue;
 
-function getValueMappedFromObject( hp_item, source_property ) {
+/**
+ * module dependencies
+ */
+parseValue = require( './parsers/parse-value' );
+
+/**
+ * @param {Object} hp_item
+ * @param {Object} ia_item
+ * @param {string} source_property
+ * @returns {string}
+ */
+function getValueMappedFromObject( hp_item, ia_item, source_property ) {
   var i;
-  var value;
   var search;
   var source_property_array;
+  var value;
 
   source_property_array = source_property.split( '.' );
 
@@ -20,6 +32,8 @@ function getValueMappedFromObject( hp_item, source_property ) {
       value = value[ source_property_array[ i ] ];
     }
   }
+
+  value = parseValue( value, ia_item );
 
   if ( template ) {
     search = new RegExp( '%' + source_property + '%', 'g' );
@@ -32,30 +46,44 @@ function getValueMappedFromObject( hp_item, source_property ) {
   return value;
 }
 
-function getValueMapped( hp_item, source_property ) {
+/**
+ * @param {Object} hp_item
+ * @param {Object} ia_item
+ * @param {string} source_property
+ * @returns {string}
+ */
+function getValueMapped( hp_item, ia_item, source_property ) {
   var i;
   var result;
   var search;
+  var value;
 
   result = '';
+  value = hp_item[ source_property ];
 
-  if ( typeof hp_item[ source_property ] === 'undefined' ) {
+  if ( typeof value === 'undefined' ) {
     return result;
   }
 
-  if ( typeof hp_item[ source_property ] === 'string' || typeof hp_item[ source_property ] === 'number' ) {
+  if ( typeof value === 'string' || typeof value === 'number' ) {
+
+    value = parseValue( value, ia_item );
+
     if ( template ) {
       search = new RegExp( '%' + source_property + '%', 'g' );
-      template = template.replace( search, hp_item[ source_property ] ) + ' ';
+      template = template.replace( search, value ) + ' ';
       result = template;
     } else {
-      result += hp_item[ source_property ] + ' ';
+      result += value + ' ';
     }
   }
 
   return result;
 }
 
+/**
+ * @param {Object} ia_item
+ */
 function setTemplate( ia_item ) {
   var i;
   var templates;
@@ -82,8 +110,6 @@ function setTemplate( ia_item ) {
 }
 
 /**
- * @todo refine logic and handle expected formats
- *
  * @param {Object} hp_item
  * @param {Object} ia_item
  * @returns {string}
@@ -105,8 +131,11 @@ module.exports = function getMappedMetadataValue( hp_item, ia_item ) {
 
   setTemplate( ia_item );
 
+  // value represents a static value that will be used
   if ( typeof ia_item.value === 'string' ) {
     result = ia_item.value;
+
+    // value may be dynamic
   } else if ( ia_item[ 'source-properties' ] instanceof Array ) {
     for ( i = 0; i < ia_item[ 'source-properties' ].length; i += 1 ) {
       source_property = ia_item[ 'source-properties' ][ i ];
@@ -117,15 +146,15 @@ module.exports = function getMappedMetadataValue( hp_item, ia_item ) {
 
       if ( source_property.indexOf( '.' ) !== -1 ) {
         if ( template ) {
-          result = getValueMappedFromObject( hp_item, source_property );
+          result = getValueMappedFromObject( hp_item, ia_item, source_property );
         } else {
-          result += getValueMappedFromObject( hp_item, source_property );
+          result += getValueMappedFromObject( hp_item, ia_item, source_property );
         }
       } else {
         if ( template ) {
-          result = getValueMapped( hp_item, source_property );
+          result = getValueMapped( hp_item, ia_item, source_property );
         } else {
-          result += getValueMapped( hp_item, source_property );
+          result += getValueMapped( hp_item, ia_item, source_property );
         }
       }
     }
