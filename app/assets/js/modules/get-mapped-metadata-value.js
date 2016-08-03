@@ -11,6 +11,28 @@ var parseValue;
  */
 parseValue = require( './parsers/parse-value' );
 
+function getValueFromTag( hp_item, source_property ) {
+  var i;
+  var result;
+  var tag;
+
+  result = '';
+
+  if ( !( hp_item[ source_property ] instanceof Array ) ) {
+    return result;
+  }
+
+  for ( i = 0; i < hp_item[ source_property ].length; i += 1 ) {
+    tag = hp_item[ source_property ][ i ];
+
+    if ( typeof tag.text === 'string' ) {
+      result += tag.text + ', ';
+    }
+  }
+
+  return result.trim().slice( 0, -1 );
+}
+
 /**
  * @param {Object} hp_item
  * @param {Object} ia_item
@@ -142,6 +164,10 @@ module.exports = function getMappedMetadataValue( hp_item, ia_item ) {
 
       if ( typeof source_property !== 'string' ) {
         continue;
+      }
+
+      if ( source_property === 'tags' ) {
+        return getValueFromTag( hp_item, source_property );
       }
 
       if ( source_property.indexOf( '.' ) !== -1 ) {

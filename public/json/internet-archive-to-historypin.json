@@ -181,9 +181,7 @@
   },
   "subject": {
     "source-properties": [
-      "tags",
-      "all_tags",
-      "tag_items"
+      "tags"
     ],
     "formats-expected": [
       "text",
