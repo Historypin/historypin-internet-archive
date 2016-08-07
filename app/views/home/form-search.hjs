@@ -1,4 +1,9 @@
 <form id="form-search">
-  state-library-of-new-south-wales-s-collection<br />sourdoughrye
+  <p>example project slugs:</p>
+  <ul>
+    <li>state-library-of-new-south-wales-s-collection</li>
+    <li>sourdoughrye</li>
+  </ul>
+  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
   <input type="search" name="search" title="search" class="form-control input-search icon-search" placeholder="enter a project slug" autofocus />
 </form>

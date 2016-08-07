@@ -15,6 +15,8 @@ lib = require( 'node-front-end-lib' );
 updateItemControls = require( './update-item-controls' );
 
 /**
+ * @typedef {Function} handleGetPinDetails.call
+ *
  * @param {XMLHttpRequest} xhr
  * @param {Object} app_data
  */

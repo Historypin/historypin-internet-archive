@@ -1,14 +1,9 @@
 'use strict';
 
 /**
- * module variables
- */
-var lib;
-
-/**
  * module dependencies
  */
-lib = require( 'node-front-end-lib' );
+var lib = require( 'node-front-end-lib' );
 
 /**
  * @link http://v76-beta-1.historypin-hrd.appspot.com/resources/docs/api/site/items/map/index.html
@@ -24,6 +19,7 @@ function getUrl( app_data ) {
 
 /**
  * @param {Object} app_data
+ * @returns {Promise}
  */
 module.exports = function getProjectPinIds( app_data ) {
   return lib.ajax.get( getUrl( app_data ) );

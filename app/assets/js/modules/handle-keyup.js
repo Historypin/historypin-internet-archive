@@ -11,6 +11,7 @@ var lib;
 lib = require( 'node-front-end-lib' );
 
 /**
+ * @typedef {Function} handleKeyUp.call
  * @param {Event} evt
  */
 module.exports = function handleKeyUp( evt ) {

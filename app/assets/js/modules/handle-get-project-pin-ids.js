@@ -1,18 +1,12 @@
 'use strict';
 
 /**
- * module variables
- */
-var getPinDetails;
-var lib;
-
-/**
  * module dependencies
  */
-getPinDetails = require( './get-pin-details' );
-lib = require('node-front-end-lib');
+var lib = require('node-front-end-lib');
 
 /**
+ * @typedef {Function} handleGetProjectPinIds.call
  *
  * @param xhr
  * @param app_data

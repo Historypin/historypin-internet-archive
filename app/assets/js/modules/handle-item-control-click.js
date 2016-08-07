@@ -1,49 +1,72 @@
 'use strict';
 
 /**
- * module variables
- */
-var addCurrentItemToPage;
-var getPinDetails;
-var getProjectPinIds;
-var handleGetPinDetails;
-var handleGetProjectPinIds;
-var updateItemControls;
-
-/**
  * module dependencies
  */
-addCurrentItemToPage = require( './add-current-item-to-page' );
-getPinDetails = require( './get-pin-details' );
-getProjectPinIds = require( './get-project-pin-ids' );
-handleGetPinDetails = require( './handle-get-pin-details' );
-handleGetProjectPinIds = require( './handle-get-project-pin-ids' );
-updateItemControls = require( './update-item-controls' );
+var addCurrentItemToPage = require( './add-current-item-to-page' );
+var addSpinner = require( './add-spinner' );
+var getPinDetails = require( './get-pin-details' );
+var getProjectPinIds = require( './get-project-pin-ids' );
+var handleGetPinDetails = require( './handle-get-pin-details' );
+var handleGetProjectPinIds = require( './handle-get-project-pin-ids' );
+var lib = require( 'node-front-end-lib' );
+var updateItemControls = require( './update-item-controls' );
 
 /**
- * @param {Event} evt
+ * @param {Object} app_data
  */
-module.exports = function handleItemControlClick( evt ) {
-  var app_data;
-  var button;
+function createBatchJob( app_data ) {
+  var data;
+  var response;
+  var item_control;
 
-  evt.preventDefault();
-  app_data = evt.data;
-  button = evt.target || evt.srcElement;
+  data = 'app_data=' + JSON.stringify( app_data );
+  data += '&_csrf=' + encodeURIComponent( document.getElementsByName( '_csrf' )[ 0 ].value );
 
-  // increment/decrement current item index
-  if ( button.getAttribute( 'data-action' ) === 'previous' ) {
-    app_data.current_item_index -= 1;
-  } else {
-    app_data.current_item_index += 1;
+  if ( confirm( 'are you sure you want to create a batch job for ' + app_data.project + ' ( ' + app_data.count + ' items ) ?' ) ) {
+    item_control = document.getElementById( 'item-control' );
+    app_data.form.removeChild( app_data.search );
+    item_control.removeChild( app_data.item_control.previous );
+    item_control.removeChild( app_data.item_control.next );
+    item_control.removeChild( app_data.item_control.create_batch_job );
+
+    lib.addClass( app_data.metadata.row, 'center' );
+    addSpinner( app_data );
+
+    lib.ajax.post( '/ajax/create-batch-job', { data: data } )
+      .then(
+        function ( xhr ) {
+          response = lib.extractXhrResponse( xhr );
+          response = JSON.parse( response );
+
+          if ( response[ 'batch-job-created' ] !== true ) {
+            return;
+          }
+
+          app_data.metadata.row.innerHTML = '<h2>batch job created</h2><a href="/batch-jobs">batch jobs</a>';
+        }
+      )
+      .catch(
+        function ( err ) {
+          app_data.metadata.row.innerHTML = '<p class="error">we apologize; there was a problem creating the batch job.</p>';
+          console.log( err );
+        }
+      );
   }
+}
 
-  // handle current item index = total count
-  if ( app_data.current_item_index === app_data.count ) {
-    app_data.current_item_index -= 1;
-    return;
-  }
+/**
+ * @param {Object} app_data
+ */
+function previousItem( app_data ) {
+  app_data.current_item_index -= 1;
+  processItemRequest( app_data );
+}
 
+/**
+ * @param {Object} app_data
+ */
+function processItemRequest( app_data ) {
   // get project pin ids
   if ( app_data.current_item_index === app_data.items.length - 1 ) {
     if ( app_data.current_item_index + 1 >= app_data.count ) {
@@ -82,4 +105,49 @@ module.exports = function handleItemControlClick( evt ) {
 
   updateItemControls( app_data );
   addCurrentItemToPage( app_data );
+}
+
+/**
+ * @param {Object} app_data
+ */
+function nextItem( app_data ) {
+  app_data.current_item_index += 1;
+
+  if ( app_data.current_item_index === app_data.count ) {
+    app_data.current_item_index -= 1;
+    return;
+  }
+
+  processItemRequest( app_data );
+}
+
+/**
+ * @param {string} action
+ * @returns {*}
+ */
+function getControlHandler( action ) {
+  return {
+    'create-batch-job': createBatchJob,
+    'next': nextItem,
+    'previous': previousItem
+  }[ action ];
+}
+
+/**
+ * @typedef {Function} handleItemControlClick.call
+ * @param {Event} evt
+ */
+module.exports = function handleItemControlClick( evt ) {
+  var app_data;
+  var button;
+  var controlHandler;
+
+  evt.preventDefault();
+  app_data = evt.data;
+  button = evt.target || evt.srcElement;
+  controlHandler = getControlHandler( button.getAttribute( 'data-action' ) );
+
+  if ( controlHandler instanceof Function ) {
+    controlHandler( app_data );
+  }
 };

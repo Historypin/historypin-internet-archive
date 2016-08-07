@@ -1,29 +1,19 @@
 'use strict';
 
 /**
- * module variables
- */
-var express;
-var path;
-var router;
-
-/**
  * variable assignments
  */
-express = require( 'express' );
-path = require( 'path' );
-router = express.Router();
-
-router.get( '/', require( path.join( __dirname, '..', 'controllers', 'home', 'get' ) ) );
-
-router.get( '/ajax/get-gallery', require( path.join( __dirname, '..', 'controllers', 'ajax', 'gallery', 'get' ) ) );
-router.get( '/ajax/get-map', require( path.join( __dirname, '..', 'controllers', 'ajax', 'map', 'get' ) ) );
-router.get( '/ajax/get-mapping', require( path.join( __dirname, '..', 'controllers', 'ajax', 'mapping', 'get' ) ) );
-router.get( '/ajax/get-pin', require( path.join( __dirname, '..', 'controllers', 'ajax', 'pin', 'get' ) ) );
-router.get( '/ajax/get-project', require( path.join( __dirname, '..', 'controllers', 'ajax', 'project', 'get' ) ) );
-router.get( '/ajax/listing', require( path.join( __dirname, '..', 'controllers', 'ajax', 'listing', 'get' ) ) );
+var express = require( 'express' );
+var router = express.Router();
+var ajaxRouting = require( './ajax' );
+var batchJobsRouting = require( './batch-jobs' );
+var homeRouting = require( './home' );
+var path = require( 'path' );
 
 module.exports = function routes( app ) {
   app.use( express.static( path.join( __dirname, '..', '..', 'public' ) ) );
+  ajaxRouting( router );
+  batchJobsRouting( router );
+  homeRouting( router );
   app.use( router );
 };

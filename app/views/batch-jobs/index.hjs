@@ -1,0 +1,6 @@
+{{> html-open }}
+<h1>historypin internet archive</h1>
+<p>an application that allows one to upload historypin collections to the internet archive</p>
+<h2>batch-jobs</h2>
+<table id="batch-job-rows"></table>
+{{> html-close }}

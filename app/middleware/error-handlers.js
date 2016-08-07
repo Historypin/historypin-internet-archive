@@ -1,19 +1,14 @@
 'use strict';
 
 /**
- * module variables
- * @private
- */
-var errorLogger;
-
-/**
  * module dependencies
  */
-errorLogger = require( 'node-helpers' ).errorLogger;
+var errorLogger = require( 'node-error-logger' );
 
 /**
- * @public
  * @param {Function} app
+ * @param {Function} app.get
+ * @param {Function} app.use
  */
 module.exports = function ( app ) {
   // catch 404 and forward to error handler
@@ -26,8 +21,8 @@ module.exports = function ( app ) {
   // development error handler
   // will print stacktrace
   if ( app.get( 'env' ) === 'development' ) {
-    app.use( function ( err, req, res, next ) {
-      errorLogger( err, req, res );
+    app.use( function ( err, req, res ) {
+      errorLogger( err, req );
       res.status( err.status || 500 );
 
       res.render( 'error', {
@@ -39,8 +34,8 @@ module.exports = function ( app ) {
 
   // production error handler
   // no stacktraces leaked to user
-  app.use( function ( err, req, res, next ) {
-    errorLogger( err, req, res );
+  app.use( function ( err, req, res ) {
+    errorLogger( err, req );
     res.status( err.status || 500 );
 
     res.render( 'error', {

@@ -3,10 +3,11 @@
 /**
  * @param {IncomingMessage} req
  * @param {IncomingMessage} req.session
- * @param {Object} context
- * @returns {*}
+ * @returns {{}|*}
  */
-module.exports = function getInitialContext( req, context ) {
+module.exports = function getInitialContext( req ) {
+  var context;
+
   context = {};
   context.partials = {};
   context.lang = req.session.lang;

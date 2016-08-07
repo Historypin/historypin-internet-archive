@@ -1,24 +1,16 @@
 'use strict';
 
 /**
- * module variables
- */
-var getPinDetails;
-var getProjectPinIds;
-var handleGetPinDetails;
-var handleGetProjectPinIds;
-var setupDynamicAppData;
-
-/**
  * module dependencies
  */
-getPinDetails = require( './get-pin-details' );
-getProjectPinIds = require( './get-project-pin-ids' );
-handleGetPinDetails = require( './handle-get-pin-details' );
-handleGetProjectPinIds = require( './handle-get-project-pin-ids' );
-setupDynamicAppData = require( './setup-app-data-dynamic' );
+var getPinDetails = require( './get-pin-details' );
+var getProjectPinIds = require( './get-project-pin-ids' );
+var handleGetPinDetails = require( './handle-get-pin-details' );
+var handleGetProjectPinIds = require( './handle-get-project-pin-ids' );
+var setupDynamicAppData = require( './setup-app-data-dynamic' );
 
 /**
+ * @typedef {Function} handleSubmit.call
  * @param {Event} evt
  */
 module.exports = function handleSubmit( evt ) {

@@ -5,7 +5,7 @@
  */
 var getDefaultContext = require( '../../contexts/default' );
 var getGenericPageContext = require( '../../contexts/pages/generic' );
-var getPageContext = require( '../../contexts/pages/home' );
+var getPageContext = require( '../../contexts/pages/batch-jobs' );
 
 /**
  * @param {IncomingMessage} req
