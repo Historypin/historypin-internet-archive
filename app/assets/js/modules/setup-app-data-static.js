@@ -7,7 +7,6 @@ var getMapping = require( './get-mapping' );
 var handleItemControlClick = require( './handle-item-control-click' );
 var handleKeyUp = require( './handle-keyup' );
 var handleSubmit = require( './handle-submit' );
-var lib = require( 'node-front-end-lib' );
 
 /**
  * @param {Object} app_data

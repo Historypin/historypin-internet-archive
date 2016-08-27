@@ -12,25 +12,6 @@ getApiPromise = require( 'node-historypin' ).getApiPromise;
 
 /**
  * @param {IncomingMessage} req
- * @param {Object} options
- * @returns {Object}
- */
-function addQueryString( req, options ) {
-  options.qs = {};
-
-  if ( req.query.paging && typeof req.query.paging === 'number' && !isNaN( req.query.paging ) ) {
-    options.qs.paging = req.query.paging;
-  }
-
-  if ( req.query.limit && typeof req.query.limit === 'number' && !isNaN( req.query.limit ) ) {
-    options.qs.limit = req.query.limit;
-  }
-
-  return options;
-}
-
-/**
- * @param {IncomingMessage} req
  * @param {Object} req.query
  *
  * @param {ServerResponse} res
@@ -40,7 +21,6 @@ function addQueryString( req, options ) {
  */
 module.exports = function ( req, res, next ) {
   var options;
-  var result;
 
   options = {};
 

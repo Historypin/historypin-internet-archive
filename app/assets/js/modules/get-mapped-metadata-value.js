@@ -75,7 +75,6 @@ function getValueMappedFromObject( hp_item, ia_item, source_property ) {
  * @returns {string}
  */
 function getValueMapped( hp_item, ia_item, source_property ) {
-  var i;
   var result;
   var search;
   var value;

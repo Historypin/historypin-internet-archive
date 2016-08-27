@@ -1,16 +1,6 @@
 'use strict';
 
 /**
- * module variables
- */
-var calculateCurrentPage;
-
-/**
- * module dependencies
- */
-calculateCurrentPage = require( './calculate-current-page' );
-
-/**
  * @param {Object} app_data
  */
 module.exports = function updateItemControls( app_data) {

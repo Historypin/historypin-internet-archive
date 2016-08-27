@@ -21,7 +21,6 @@ callApi = require( 'node-historypin' ).callApi;
  */
 module.exports = function ( req, res, next ) {
   var options;
-  var result;
 
   options = {};
 

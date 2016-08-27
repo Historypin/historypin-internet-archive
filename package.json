@@ -5,8 +5,8 @@
   "description": "an application that allows one to upload historypin collections to the internet archive",
   "scripts": {
     "browserify": "browserify ./app/assets/js/app.js -o ./public/js/app.js",
-    "build:js": "npm run jshint && npm run browserify && npm run uglifyjs",
-    "jshint": "jshint .",
+    "build:js": "npm run eslint && npm run browserify && npm run uglifyjs",
+    "eslint": "eslint .",
     "start": "npm run build:js && nodemon ./bin/www & npm run watchify",
     "uglifyjs": "uglifyjs ./public/js/app.js -c drop_console=true,warnings=false -o ./public/js/app.min.js",
     "watchify": "watchify ./app/assets/js/app.js -o ./public/js/app.js"
@@ -14,17 +14,17 @@
   "author": "dan entous",
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^3.3.3",
-    "body-parser": "^1.15.0",
-    "browserify": "^13.0.0",
-    "compression": "^1.6.1",
-    "cookie-parser": "^1.4.1",
-    "cookie-session": "^1.2.0",
-    "csurf": "^1.8.3",
-    "express": "^4.13.4",
+    "bluebird": "3.4.3",
+    "body-parser": "1.15.2",
+    "browserify": "13.1.0",
+    "compression": "1.6.2",
+    "cookie-parser": "1.4.3",
+    "cookie-session": "2.0.0-alpha.1",
+    "csurf": "1.9.0",
+    "eslint": "3.4.0",
+    "express": "4.14.0",
     "hjs": "0.0.6",
-    "jshint": "^2.9.1",
-    "morgan": "^1.7.0",
+    "morgan": "1.7.0",
     "node-accepted-languages": "git+https://github.com/dan-nl/node-accepted-languages.git",
     "node-create-file": "git+https://github.com/dan-nl/node-create-file.git",
     "node-error-logger": "git+https://github.com/dan-nl/node-error-logger.git",
@@ -32,14 +32,14 @@
     "node-front-end-lib": "git+https://github.com/dan-nl/node-front-end-lib.git",
     "node-historypin": "git+https://github.com/Historypin/node-historypin.git",
     "node-lang": "git+https://github.com/dan-nl/node-lang.git",
-    "node-sass-middleware": "^0.9.7",
-    "request": "^2.69.0",
-    "request-debug": "^0.2.0",
-    "uglify-js": "^2.6.2",
-    "validator": "^5.1.0"
+    "node-sass-middleware": "0.9.8",
+    "request": "2.74.0",
+    "request-debug": "0.2.0",
+    "uglify-js": "2.7.3",
+    "validator": "5.5.0"
   },
   "devDependencies": {
-    "nodemon": "^1.9.1",
-    "watchify": "^3.7.0"
+    "nodemon": "1.10.2",
+    "watchify": "3.7.0"
   }
 }
