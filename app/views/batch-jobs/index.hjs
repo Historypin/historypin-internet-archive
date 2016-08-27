@@ -2,5 +2,16 @@
 <h1>historypin internet archive</h1>
 <p>an application that allows one to upload historypin collections to the internet archive</p>
 <h2>batch-jobs</h2>
-<table id="batch-job-rows"></table>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>date</th>
+      <th>project</th>
+      <th>count</th>
+      <th>metadata uploaded</th>
+      <th>digital media uploaded</th>
+    </tr>
+  </thead>
+  <tbody id="batch-job-rows"></tbody>
+</table>
 {{> html-close }}
