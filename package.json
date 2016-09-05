@@ -1,6 +1,6 @@
 {
   "name": "historypin-internet-archive",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "description": "an application that allows one to upload historypin collections to the internet archive",
   "author": "dan entous",
