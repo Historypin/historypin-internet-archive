@@ -9,6 +9,7 @@
     "browserify": "browserify ./app/assets/js/app.js -o ./public/js/app.js",
     "build:js": "npm run eslint && npm run browserify && npm run uglifyjs",
     "cover": "istanbul cover _mocha -- -R spec --recursive",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
     "eslint": "eslint .",
     "start": "npm run build:js && nodemon ./bin/www & npm run watchify",
     "test": "mocha --recursive",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "chai": "3.5.0",
+    "coveralls": "2.11.12",
     "istanbul": "0.4.5",
     "mocha": "3.0.2",
     "nodemon": "1.10.2",
