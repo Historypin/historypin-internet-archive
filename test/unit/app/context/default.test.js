@@ -2,7 +2,7 @@
 'use strict';
 
 var expect = require( 'chai' ).expect;
-var getDefaultContext = require( '../../../app/contexts/default' );
+var getDefaultContext = require( '../../../../app/contexts/default' );
 
 describe( 'getInitialContext( req )', function () {
   var req = {
