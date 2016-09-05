@@ -1,4 +1,4 @@
-/* globals describe, it */
+/* globals before, describe, it */
 'use strict';
 
 /**
@@ -6,10 +6,15 @@
  */
 var expect = require( 'chai' ).expect;
 var getDefaultContext = require( '../../../../app/contexts/default' );
-var req = require( '../../fixtures/req' );
 
 describe( 'getDefaultContext( req )', function () {
-  var context = getDefaultContext( req );
+  var context;
+  var req;
+
+  before( function () {
+    req = require( '../../fixtures/req' );
+    context = getDefaultContext( req );
+  } );
 
   describe( 'should return context', function () {
     it( 'as an object', function () {

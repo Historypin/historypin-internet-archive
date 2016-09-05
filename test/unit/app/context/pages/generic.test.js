@@ -1,4 +1,4 @@
-/* globals describe, it */
+/* globals before, describe, it */
 'use strict';
 
 /**
@@ -6,12 +6,17 @@
  */
 var expect = require( 'chai' ).expect;
 var getGenericPageContext = require( '../../../../../app/contexts/pages/generic' );
-var req = require( '../../../fixtures/req' );
-var context = require( '../../../fixtures/context' );
 var fileExists = require( 'node-file-exists' );
 
 describe( 'getGenericPageContext( req, context )', function () {
-  context = getGenericPageContext( req, context );
+  var context;
+  var req;
+
+  before( function () {
+    context = require( '../../../fixtures/context' );
+    req = require( '../../../fixtures/req' );
+    context = getGenericPageContext( req, context );
+  } );
 
   describe( 'should return context', function () {
     it( 'as an object', function () {
