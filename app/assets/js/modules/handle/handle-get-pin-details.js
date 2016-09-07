@@ -10,9 +10,9 @@ var updateItemControls;
 /**
  * module dependencies
  */
-addCurrentItemToPage = require( './add-current-item-to-page' );
+addCurrentItemToPage = require( './../add/add-current-item-to-page' );
 lib = require( 'node-front-end-lib' );
-updateItemControls = require( './update-item-controls' );
+updateItemControls = require( './../update-item-controls' );
 
 /**
  * @typedef {Function} handleGetPinDetails.call

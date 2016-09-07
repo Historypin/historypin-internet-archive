@@ -9,7 +9,7 @@ var updateItemControls;
 /**
  * module dependencies
  */
-addCurrentItemToPage = require( './add-current-item-to-page' );
+addCurrentItemToPage = require( './add/add-current-item-to-page' );
 updateItemControls = require('./update-item-controls');
 
 /**

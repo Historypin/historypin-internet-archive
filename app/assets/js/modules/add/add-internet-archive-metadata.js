@@ -8,7 +8,7 @@ var getMappedMetadataValue;
 /**
  * module dependencies
  */
-getMappedMetadataValue = require( './get-mapped-metadata-value' );
+getMappedMetadataValue = require( './../get/get-mapped-metadata-value' );
 
 /**
  * @param hp_item

@@ -3,10 +3,10 @@
 /**
  * module dependencies
  */
-var getMapping = require( './get-mapping' );
-var handleItemControlClick = require( './handle-item-control-click' );
-var handleKeyUp = require( './handle-keyup' );
-var handleSubmit = require( './handle-submit' );
+var getMapping = require( './../get/get-mapping' );
+var handleItemControlClick = require( './../handle/handle-item-control-click' );
+var handleKeyUp = require( './../handle/handle-keyup' );
+var handleSubmit = require( './../handle/handle-submit' );
 
 /**
  * @param {Object} app_data

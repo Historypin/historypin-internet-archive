@@ -3,9 +3,9 @@
 /**
  * module dependencies
  */
-var createBatchJob = require( './batch-jobs/create-batch-job' );
-var nextItem = require( './items/next-item' );
-var previousItem = require( './items/previous-item' );
+var createBatchJob = require( './../create/create-batch-job' );
+var nextItem = require( './../items/next-item' );
+var previousItem = require( './../items/previous-item' );
 
 /**
  * module variables

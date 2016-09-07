@@ -1,11 +1,11 @@
 'use strict';
 
-var addCurrentItemToPage = require( './add-current-item-to-page' );
-var getPinDetails = require( './get-pin-details' );
-var getProjectPinIds = require( './get-project-pin-ids' );
-var handleGetPinDetails = require( './handle-get-pin-details' );
-var handleGetProjectPinIds = require( './handle-get-project-pin-ids' );
-var updateItemControls = require( './update-item-controls' );
+var addCurrentItemToPage = require( './../add/add-current-item-to-page' );
+var getPinDetails = require( './../get/get-pin-details' );
+var getProjectPinIds = require( './../get/get-project-pin-ids' );
+var handleGetPinDetails = require( './../handle/handle-get-pin-details' );
+var handleGetProjectPinIds = require( './../handle/handle-get-project-pin-ids' );
+var updateItemControls = require( './../update-item-controls' );
 
 /**
  * @param {Object} app_data

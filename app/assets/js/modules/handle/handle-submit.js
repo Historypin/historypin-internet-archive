@@ -3,11 +3,11 @@
 /**
  * module dependencies
  */
-var getPinDetails = require( './get-pin-details' );
-var getProjectPinIds = require( './get-project-pin-ids' );
+var getPinDetails = require( './../get/get-pin-details' );
+var getProjectPinIds = require( './../get/get-project-pin-ids' );
 var handleGetPinDetails = require( './handle-get-pin-details' );
 var handleGetProjectPinIds = require( './handle-get-project-pin-ids' );
-var setupDynamicAppData = require( './setup-app-data-dynamic' );
+var setupDynamicAppData = require( './../setup/setup-app-data-dynamic' );
 
 /**
  * @typedef {Function} handleSubmit.call

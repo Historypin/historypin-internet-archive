@@ -8,8 +8,8 @@ var app_data;
 /**
  * module dependencies
  */
-var setupStaticAppData = require( '../modules/setup-app-data-static' );
-var setupDynamicAppData = require( '../modules/setup-app-data-dynamic' );
+var setupStaticAppData = require( '../modules/setup/setup-app-data-static' );
+var setupDynamicAppData = require( '../modules/setup/setup-app-data-dynamic' );
 
 module.exports = function setup( page ) {
   if ( page !== 'home' ) {

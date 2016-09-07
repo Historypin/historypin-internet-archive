@@ -9,7 +9,7 @@ var parseValue;
 /**
  * module dependencies
  */
-parseValue = require( './parsers/parse-value' );
+parseValue = require( './../parsers/parse-value' );
 
 function getValueFromTag( hp_item, source_property ) {
   var i;
