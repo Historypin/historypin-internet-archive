@@ -31,7 +31,7 @@ describe( 'getGenericPageContext( req, context )', function () {
 
         it( 'that refers to a view file that exits', function () {
           var file_exists = fileExists( context.partials[ 'html-open' ] + '.hjs' );
-          expect( file_exists ).to.be.true;
+          expect( file_exists ).to.equal( true );
         } );
       } );
 
@@ -42,7 +42,7 @@ describe( 'getGenericPageContext( req, context )', function () {
 
         it( 'that refers to a view file that exits', function () {
           var file_exists = fileExists( context.partials[ 'html-close' ] + '.hjs' );
-          expect( file_exists ).to.be.true;
+          expect( file_exists ).to.equal( true );
         } );
       } );
     } );
