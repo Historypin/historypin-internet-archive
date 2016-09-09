@@ -9,42 +9,58 @@ var lib = require( 'node-front-end-lib' );
 /**
  * @param {Object} app_data
  */
+function updateUI( app_data ) {
+  var item_control = document.getElementById( 'item-control' );
+
+  app_data.form.removeChild( app_data.search );
+  item_control.removeChild( app_data.item_control.previous );
+  item_control.removeChild( app_data.item_control.next );
+  item_control.removeChild( app_data.item_control.create_batch_job );
+
+  lib.addClass( app_data.metadata.row, 'center' );
+  addSpinner( app_data );
+}
+
+/**
+ * @param {Object} app_data
+ */
 module.exports = function createBatchJob( app_data ) {
   var data;
+  var prompt;
   var response;
-  var item_control;
 
-  data = 'app_data=' + JSON.stringify( app_data );
-  data += '&_csrf=' + encodeURIComponent( document.getElementsByName( '_csrf' )[ 0 ].value );
+  data = 'project=%project&count=%count&_csrf=%csrf'
+    .replace( '%project', encodeURIComponent( app_data.project ) )
+    .replace( '%count', parseInt( app_data.count, 10 ) )
+    .replace( '%csrf', encodeURIComponent( document.getElementsByName( '_csrf' )[ 0 ].value ) );
 
-  if ( confirm( 'are you sure you want to create a batch job for ' + app_data.project + ' ( ' + app_data.count + ' items ) ?' ) ) {
-    item_control = document.getElementById( 'item-control' );
-    app_data.form.removeChild( app_data.search );
-    item_control.removeChild( app_data.item_control.previous );
-    item_control.removeChild( app_data.item_control.next );
-    item_control.removeChild( app_data.item_control.create_batch_job );
+  prompt = 'are you sure you want to create a batch job for %project  ( %count items ) ?'
+    .replace( '%project', encodeURIComponent( app_data.project ) )
+    .replace( '%count', parseInt( app_data.count, 10 ) );
 
-    lib.addClass( app_data.metadata.row, 'center' );
-    addSpinner( app_data );
-
-    lib.ajax.post( '/ajax/create-batch-job', { data: data } )
-      .then(
-        function ( xhr ) {
-          response = lib.extractXhrResponse( xhr );
-          response = JSON.parse( response );
-
-          if ( response[ 'batch-job-created' ] !== true ) {
-            return;
-          }
-
-          app_data.metadata.row.innerHTML = '<h2>batch job created</h2><a href="/batch-jobs">batch jobs</a>';
-        }
-      )
-      .catch(
-        function ( err ) {
-          app_data.metadata.row.innerHTML = '<p class="error">we apologize; there was a problem creating the batch job.</p>';
-          console.log( err );
-        }
-      );
+  if ( !confirm( prompt ) ) {
+    return;
   }
+
+  updateUI( app_data );
+
+  lib.ajax.post( '/ajax/create-batch-job', { data: data } )
+    .then(
+      function ( xhr ) {
+        response = lib.extractXhrResponse( xhr );
+        response = JSON.parse( response );
+
+        if ( response.created !== true ) {
+          throw new Error( 'unknown error' );
+        }
+
+        app_data.metadata.row.innerHTML = '<h2>batch job created</h2><a href="/batch-jobs">batch jobs</a>';
+      }
+    )
+    .catch(
+      function ( err ) {
+        app_data.metadata.row.innerHTML = '<p class="error">we apologize; there was a problem creating the batch job.</p>';
+        console.log( err );
+      }
+    );
 };

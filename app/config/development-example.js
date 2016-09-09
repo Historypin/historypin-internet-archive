@@ -1,12 +1,21 @@
 'use strict';
 
+var path = require( 'path' );
+
 module.exports = {
+  batch_jobs: {
+    file: 'batch-job.json',
+    path: path.join( __dirname, '..', '..', 'batch-jobs' )
+  },
   cookie: {
     expires: new Date( new Date().getTime() + ( 85 * 365 * 24 * 60 * 60 * 1000 ) ),
     keys: [ 'anykey', 'combinatie', 'werkt' ],
     maxAge: 85 * 365 * 24 * 60 * 60 * 1000
   },
   ip_address: process.env.NODE_IP_ADDRESS || '',
+  lang: {
+    default: 'en'
+  },
   morgan_debug: true,
   port: 8081,
   request: {

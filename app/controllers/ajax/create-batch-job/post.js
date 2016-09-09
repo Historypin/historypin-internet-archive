@@ -4,32 +4,57 @@
  * module dependencies
  */
 var config = require( '../../../config' );
-var createFile = require( 'node-create-file' );
+var mkdir = require( 'mkdir-bluebird' );
+var writeFile = require( 'write-file-bluebird' );
 var path = require( 'path' );
 
 /**
  * @param {IncomingMessage} req
  * @param {Object} req.body
- * @param {string} req.body.app_data
+ * @param {number} req.body.count
+ * @param {string} req.body.project
  *
  * @param {ServerResponse} res
  * @param {Function} res.send
  * @param {Function} next
  */
-module.exports = function getIndex( req, res, next ) {
+module.exports = function createBatchJob( req, res, next ) {
   var app_data;
-  var file_path_name;
+  var batch_job;
+  var batch_job_file;
+  var batch_job_path;
+  var timestamp;
 
-  app_data = JSON.parse( req.body.app_data );
-  file_path_name = path.join( config.batch_jobs.projects, app_data.project + '_' + Date.now() + '_' + app_data.count + '.json' );
+  timestamp = Date.now();
 
-  createFile( file_path_name, req.body.app_data )
+  app_data = {
+    count: parseInt( req.body.count, 10 ),
+    items_in_queue: 0,
+    project: encodeURIComponent( req.body.project ),
+    status: 'active',
+    timestamp: timestamp
+  };
+
+  batch_job = app_data.project + '-' + timestamp;
+  batch_job_path = path.join( config.batch_jobs.path, batch_job );
+  batch_job_file = path.join( batch_job_path, config.batch_jobs.file );
+
+  mkdir( batch_job_path )
     .then(
       function() {
-        res.send( { 'batch-job-created': true } );
+        return writeFile( batch_job_file, JSON.stringify( app_data ) );
       }
-    ).catch(
-      function( err ) {
+    )
+    .then(
+      function () {
+        res.send( {
+          created: true,
+          'batch-job': batch_job
+        } );
+      }
+    )
+    .catch(
+      function ( err ) {
         next( err );
       }
     );
