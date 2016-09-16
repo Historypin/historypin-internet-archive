@@ -1,4 +1,4 @@
-{
+module.exports = {
   "env": {
     "browser": true,
     "commonjs": true,
@@ -70,13 +70,7 @@
     "id-blacklist": "error",
     "id-length": "off",
     "id-match": "error",
-    "indent": [
-      "error",
-      2,
-      {
-        "SwitchCase": 1
-      }
-    ],
+    "indent": "off",
     "init-declarations": "off",
     "jsx-quotes": "error",
     "key-spacing": "error",
@@ -91,7 +85,7 @@
       "error",
       "unix"
     ],
-    "lines-around-comment": "error",
+    "lines-around-comment": "off",
     "max-depth": "error",
     "max-len": "off",
     "max-lines": "error",
@@ -180,7 +174,7 @@
     "no-unneeded-ternary": "error",
     "no-unsafe-negation": "error",
     "no-unused-expressions": "error",
-    "no-use-before-define": "off",
+    "no-use-before-define": "error",
     "no-useless-call": "error",
     "no-useless-computed-key": "error",
     "no-useless-concat": "error",
@@ -218,7 +212,10 @@
       "error",
       "single"
     ],
-    "radix": "error",
+    "radix": [
+      "error",
+      "always"
+    ],
     "require-jsdoc": "off",
     "rest-spread-spacing": "error",
     "semi": "error",
@@ -258,4 +255,4 @@
       "never"
     ]
   }
-}
+};
