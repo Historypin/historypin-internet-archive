@@ -14,11 +14,9 @@ var path = require( 'path' );
  * @param {number} req.body.count
  * @param {string} req.body.project
  *
- * @param {ServerResponse} res
- * @param {Function} res.send
- * @param {Function} next
+ * @returns {{}|Error}
  */
-module.exports = function createBatchJob( req, res, next ) {
+function createProjectBatchJobHelper( req ) {
   var app_data;
   var batch_job;
   var batch_job_file;
@@ -47,15 +45,17 @@ module.exports = function createBatchJob( req, res, next ) {
     )
     .then(
       function () {
-        res.send( {
+        return {
           created: true,
           'batch-job': batch_job
-        } );
+        };
       }
     )
     .catch(
       function ( err ) {
-        next( err );
+        return err;
       }
     );
-};
+}
+
+module.exports = createProjectBatchJobHelper;
