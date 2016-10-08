@@ -3,7 +3,7 @@
 /**
  * module dependencies
  */
-var getApiOptionsFromRequest = require( '../../../helpers/get-api-options-from-request' );
+var getApiOptionsFromRequest = require( '../../helpers/get-api-options-from-request' );
 
 /**
  * @param {IncomingMessage} req
@@ -15,6 +15,7 @@ var getApiOptionsFromRequest = require( '../../../helpers/get-api-options-from-r
 module.exports = function ( req, res, next ) {
   req.historypin = req.historypin || {};
   req.historypin.api_options = getApiOptionsFromRequest( req );
-  req.historypin.api_options.api_endpoint = 'get-pin';
+  req.historypin.api_options.api_endpoint = req.path.replace( '/ajax/', '' );
+
   next();
 };
