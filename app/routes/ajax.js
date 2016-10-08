@@ -3,8 +3,7 @@
 /**
  * module dependencies
  */
-var callHandleApi = require( '../controllers/api/call-handle-api' );
-var requestOptions = require( '../middleware/api/request-options' );
+var callApi = require( '../middleware/api/call-api' );
 
 /**
  * @param {Function} router
@@ -14,8 +13,8 @@ var requestOptions = require( '../middleware/api/request-options' );
 module.exports = function addAjaxRouting( router ) {
 
   router.get( '/ajax/get-batch-job-rows', require( '../controllers/ajax/get-batch-job-rows/get' ) );
-  router.get( '/ajax/get-map', requestOptions, callHandleApi );
-  router.get( '/ajax/get-mapping', requestOptions, callHandleApi );
-  router.get( '/ajax/get-pin', requestOptions, callHandleApi );
+  router.get( '/ajax/get-map', callApi );
+  router.get( '/ajax/get-mapping', callApi );
+  router.get( '/ajax/get-pin', callApi );
   router.post( '/ajax/create-batch-job', require( '../controllers/ajax/create-batch-job/post' ) );
 };

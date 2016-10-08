@@ -4,9 +4,19 @@
  * module dependencies
  */
 var getApiPromise = require( 'node-historypin' ).getApiPromise;
+var getApiRequestOptions = require( '../../helpers/get-api-request-options' );
 
-module.exports = function callHandleApi( req, res, next ) {
-  getApiPromise( req.historypin.api_options, req.headers )
+/**
+ * @param {IncomingMessage} req
+ * @param {Object} req.headers
+ *
+ * @param {ServerResponse} res
+ * @param {Function} res.send
+ *
+ * @param {Function} next
+ */
+function callApi( req, res, next ) {
+  getApiPromise( getApiRequestOptions( req ), req.headers )
     .then(
       /**
        * @param {Object} result
@@ -25,4 +35,6 @@ module.exports = function callHandleApi( req, res, next ) {
         next( err );
       }
     );
-};
+}
+
+module.exports = callApi;
