@@ -1,6 +1,5 @@
 app/config/development.js
 app/config/production.js
-app/config/routes.json*
 /batch-jobs/**/*.json
 coverage
 node_modules
