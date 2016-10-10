@@ -27,7 +27,7 @@
     "eslint": "3.4.0",
     "express": "4.14.0",
     "hjs": "0.0.6",
-    "mkdir-bluebird": "1.0.8",
+    "mkdir-p-bluebird": "1.0.5",
     "morgan": "1.7.0",
     "node-accepted-languages": "git+https://github.com/dan-nl/node-accepted-languages.git",
     "node-error-logger": "git+https://github.com/dan-nl/node-error-logger.git",

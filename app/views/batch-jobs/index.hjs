@@ -12,6 +12,16 @@
       <th>digital media uploaded</th>
     </tr>
   </thead>
-  <tbody id="batch-job-rows"></tbody>
+  <tbody id="batch-job-rows">
+    {{# batch_jobs }}
+      <tr>
+        <td>{{ date }}</td>
+        <td>{{ project }}</td>
+        <td>{{ count }}</td>
+        <td>{{ metadata.uploaded }}</td>
+        <td>{{ media.uploaded }}</td>
+      </tr>
+    {{/ batch_jobs }}
+  </tbody>
 </table>
 {{> html-close }}

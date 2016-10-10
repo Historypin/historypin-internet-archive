@@ -5,11 +5,6 @@
  */
 var app_data;
 
-/**
- * module dependencies
- */
-var getBatchJobRows = require( '../modules/get/get-batch-job-rows' );
-
 module.exports = function setup( page ) {
   if ( page !== 'batch-jobs' ) {
     return;
@@ -17,5 +12,4 @@ module.exports = function setup( page ) {
 
   app_data = {};
   app_data.batch_job_rows = document.getElementById( 'batch-job-rows' );
-  getBatchJobRows( app_data );
 };

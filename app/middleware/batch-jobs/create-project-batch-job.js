@@ -3,7 +3,7 @@
 /**
  * module dependencies
  */
-var createProjectBatchJobHelper = require( '../../helpers/create-project-batch-job' );
+var createProjectBatchJobHelper = require( '../../helpers/batch-jobs/create-project-batch-job' );
 
 /**
  * @param {IncomingMessage} req
@@ -14,16 +14,17 @@ var createProjectBatchJobHelper = require( '../../helpers/create-project-batch-j
  * @param {Function} next
  */
 function createProjectBatchJob( req, res, next ) {
-  var result;
-
-  result = createProjectBatchJobHelper( req );
-
-  if ( result instanceof Error ) {
-    next( err );
-    return;
-  }
-
-  res.send( result );
+  createProjectBatchJobHelper( req )
+    .then(
+      function( result ) {
+        res.send( result );
+      }
+    )
+    .catch(
+      function( err ) {
+        next( err );
+      }
+    );
 }
 
 module.exports = createProjectBatchJob;
