@@ -3,7 +3,7 @@
 /**
  * module dependencies
  */
-var config = require( '../../config' );
+var config = require( '../../config/index' );
 var mkdir = require( 'mkdir-bluebird' );
 var writeFile = require( 'write-file-bluebird' );
 var path = require( 'path' );
@@ -17,7 +17,7 @@ var Promise = require( 'bluebird' );
  *
  * @returns {Promise.<Object, Error>}
  */
-function createProjectBatchJobHelper( req ) {
+function createBatchJob( req ) {
   var app_data;
   var batch_job_file;
   var batch_job_path;
@@ -30,13 +30,16 @@ function createProjectBatchJobHelper( req ) {
   app_data = {
     count: parseInt( req.body.count, 10 ),
     date: date,
-    items_in_queue: 0,
-    project: encodeURIComponent( req.body.project ),
+    pins: {
+      ids: [],
+      page: 0
+    },
+    project: encodeURIComponent( req.body.project.trim() ),
     timestamp: timestamp
   };
 
   batch_job_path = path.join(
-    config.batch_jobs.base_path,
+    config.batch_jobs.directory,
     config.batch_jobs.create_in,
     app_data.project + '-' + timestamp
   );
@@ -123,4 +126,4 @@ function createProjectBatchJobHelper( req ) {
   );
 }
 
-module.exports = createProjectBatchJobHelper;
+module.exports = createBatchJob;

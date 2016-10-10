@@ -8,9 +8,8 @@ var getDefaultContext = require( '../../contexts/default' );
 var getGenericPageContext = require( '../../contexts/pages/generic' );
 var getPageContext = require( '../../contexts/pages/batch-jobs' );
 var getDirectories = require( '../../helpers/get-directories' );
-var getProjectBatchJobs = require( '../../helpers/batch-jobs/get-project-batch-jobs' );
+var getBatchJobs = require( '../../helpers/batch-jobs/get-batch-jobs' );
 var path = require( 'path' );
-var removeKeep = require( '../../helpers/remove-keep' );
 var Promise = require( 'bluebird' );
 
 /**
@@ -23,19 +22,19 @@ var Promise = require( 'bluebird' );
  */
 function pageBatchJobs( req, res, next ) {
   var context;
+  var state = 'processing';
 
   context = getDefaultContext( req );
   context = getGenericPageContext( req, context );
   context = getPageContext( context );
 
-  getDirectories( path.join( config.batch_jobs.base_path, 'queued' ) )
+  getDirectories( path.join( config.batch_jobs.directory, state ) )
     .then(
       /**
-       * @param {Array} directories
+       * @param {Array} directory_names
        */
-      function ( directories ) {
-        directories = removeKeep( directories );
-        return getProjectBatchJobs( directories );
+      function ( directory_names ) {
+        return getBatchJobs( directory_names, state );
       }
     )
     .then(

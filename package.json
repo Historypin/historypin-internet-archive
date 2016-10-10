@@ -27,7 +27,8 @@
     "eslint": "3.4.0",
     "express": "4.14.0",
     "hjs": "0.0.6",
-    "mkdir-p-bluebird": "1.0.5",
+    "load-json-file": "2.0.0",
+    "mkdir-bluebird": "1.0.14",
     "morgan": "1.7.0",
     "node-accepted-languages": "git+https://github.com/dan-nl/node-accepted-languages.git",
     "node-error-logger": "git+https://github.com/dan-nl/node-error-logger.git",
@@ -41,7 +42,8 @@
     "request-debug": "0.2.0",
     "uglify-js": "2.7.3",
     "validator": "5.5.0",
-    "write-file-bluebird": "1.0.2"
+    "write-file-bluebird": "1.0.2",
+    "write-json-file": "2.0.0"
   },
   "devDependencies": {
     "chai": "3.5.0",

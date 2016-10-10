@@ -1,33 +1,45 @@
+/* eslint no-sync: off */
+
 'use strict';
 
 /**
  * module dependencies
  */
 var fs = require( 'fs' );
+var path = require( 'path' );
 var Promise = require( 'bluebird' );
 
 /**
- * @param {string} base_directory
- * @returns {Promise}
+ * given an absolute directory path, return an array of the directory names,
+ * not their absolute path, within that absolute directory path
+ *
+ * @param {string} directory absolute path
+ * @returns {Promise.<Array|Error>}
  */
-function getDirectories( base_directory ) {
+function getDirectories( directory ) {
   return new Promise(
     /**
      * @param {Function} resolve
      * @param {Function} reject
      */
     function ( resolve, reject ) {
-      fs.readdir(
-        base_directory,
-        function( err, files ) {
-          if ( err ) {
-            reject( err );
-            return;
-          }
+      try {
+        resolve(
+          fs.readdirSync( directory )
+            .reduce(
+              function ( acc, file ) {
+                if ( fs.statSync( path.join( directory, file ) ).isDirectory() ) {
+                  acc.push( file );
+                }
 
-          resolve( files );
-        }
-      );
+                return acc;
+              },
+              []
+            )
+        );
+      } catch ( err ) {
+        reject( err );
+      }
     }
   );
 }

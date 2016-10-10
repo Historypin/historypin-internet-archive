@@ -3,7 +3,7 @@
 /**
  * module dependencies
  */
-var getProcessingBatchJob = require( '../../helpers/batch-jobs/get-processing-batch-job' );
+var addPinsToBatchJob = require( '../../helpers/batch-jobs/add-pins-to-batch-job' );
 
 /**
  * @param {IncomingMessage} req
@@ -12,22 +12,14 @@ var getProcessingBatchJob = require( '../../helpers/batch-jobs/get-processing-ba
  * @param {Function} res.send
  *
  * @param {Function} next
+ * @returns {undefined}
  */
-function processBatchJob( req, res, next ) {
-  getProcessingBatchJob()
+function addPinsToBatchJobPage( req, res, next ) {
+  addPinsToBatchJob()
     .then(
       /**
-       * @param {string} result
+       * @param {string|cached_result} result
        */
-      function ( result ) {
-        if ( !result ) {
-          return 'no jobs to process';
-        }
-
-        return result;
-      }
-    )
-    .then(
       function ( result ) {
         res.send( result );
       }
@@ -42,4 +34,4 @@ function processBatchJob( req, res, next ) {
     );
 }
 
-module.exports = processBatchJob;
+module.exports = addPinsToBatchJobPage;
