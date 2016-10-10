@@ -4,6 +4,7 @@
  * module dependenices
  */
 var getBatchJobsPage = require( '../middleware/pages/page-batch-jobs' );
+var processBatchJob = require( '../middleware/batch-jobs/process-batch-job' );
 
 /**
  * @param {Function} router
@@ -11,6 +12,7 @@ var getBatchJobsPage = require( '../middleware/pages/page-batch-jobs' );
  */
 function addBatchJobRouting( router ) {
   router.get( '/batch-jobs', getBatchJobsPage );
+  router.get( '/batch-jobs/process', processBatchJob );
 }
 
 module.exports = addBatchJobRouting;
