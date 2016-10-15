@@ -4,7 +4,7 @@
  * module dependencies
  */
 var getBatchJobObject = require( './get-batch-job-object' );
-var getBatchJobPinIds = require( './get-batch-job-pin-ids' );
+var getProjectPinIds = require( './../api/get-project-pin-ids' );
 var saveBatchJob = require( './save-batch-job' );
 
 /**
@@ -44,7 +44,7 @@ function addPinsToBatchJob() {
 
         cached_result = result;
 
-        return getBatchJobPinIds( result.batch_job );
+        return getProjectPinIds( result.batch_job );
       }
     )
     .then(

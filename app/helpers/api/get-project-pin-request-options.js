@@ -22,7 +22,7 @@
  * @param {Object} batch_job
  * @returns {{}}
  */
-function getPinRequestOptions( batch_job ) {
+function getProjectPinRequestOptions( batch_job ) {
   var request_options = {};
 
   batch_job.pins.page += 1;
@@ -40,4 +40,4 @@ function getPinRequestOptions( batch_job ) {
   return request_options;
 }
 
-module.exports = getPinRequestOptions;
+module.exports = getProjectPinRequestOptions;

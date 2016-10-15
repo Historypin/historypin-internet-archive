@@ -3,7 +3,7 @@
 /**
  * module dependencies
  */
-var addPinsToBatchJob = require( '../../helpers/batch-jobs/add-pins-to-batch-job' );
+var createPinDetailsJob = require( '../../helpers/pin-details-jobs/create-pin-details-job' );
 
 /**
  * @param {IncomingMessage} req
@@ -14,11 +14,12 @@ var addPinsToBatchJob = require( '../../helpers/batch-jobs/add-pins-to-batch-job
  * @param {Function} next
  * @returns {undefined}
  */
-function addPinsToBatchJobPage( req, res, next ) {
-  addPinsToBatchJob()
+function pinDetailsJob( req, res, next ) {
+  createPinDetailsJob()
     .then(
       /**
-       * @param {string|cached_result} result
+       * @param {Object} result
+       * @returns {undefined}
        */
       function ( result ) {
         res.send( result );
@@ -34,4 +35,4 @@ function addPinsToBatchJobPage( req, res, next ) {
     );
 }
 
-module.exports = addPinsToBatchJobPage;
+module.exports = pinDetailsJob;

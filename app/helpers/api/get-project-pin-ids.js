@@ -4,10 +4,10 @@
  * module dependencies
  */
 var getApiPromise = require( 'node-historypin' ).getApiPromise;
-var getPinRequestOptions = require( '../get-pin-request-options' );
-var getPinsFromJSON = require( '../get-pins-from-json' );
+var getPinRequestOptions = require( './get-project-pin-request-options' );
+var getPinsFromJSON = require( './get-project-pins-from-json' );
 
-function getBatchJobPinIds( batch_job ) {
+function getProjectPinIds( batch_job ) {
   return getApiPromise( getPinRequestOptions( batch_job ) )
     .then(
       /**
@@ -31,4 +31,4 @@ function getBatchJobPinIds( batch_job ) {
     );
 }
 
-module.exports = getBatchJobPinIds;
+module.exports = getProjectPinIds;

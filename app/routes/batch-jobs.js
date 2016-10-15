@@ -3,9 +3,10 @@
 /**
  * module dependenices
  */
+var addPinsToBatchJob = require( '../middleware/pages/addpins' );
+var createPinDetailsJob = require( '../middleware/pages/pindetails' );
 var getBatchJobsPage = require( '../middleware/pages/batch-jobs' );
-var rotateBatchJob = require( '../middleware/pages/rotate-batch-job' );
-var addPinsToBatchJob = require( '../middleware/pages/add-pins-to-batch-job' );
+var rotateBatchJob = require( '../middleware/pages/rotate' );
 
 /**
  * @param {Function} router
@@ -13,8 +14,9 @@ var addPinsToBatchJob = require( '../middleware/pages/add-pins-to-batch-job' );
  */
 function addBatchJobRouting( router ) {
   router.get( '/batch-jobs', getBatchJobsPage );
-  router.get( '/batch-jobs/rotate', rotateBatchJob );
   router.get( '/batch-jobs/addpins', addPinsToBatchJob );
+  router.get( '/batch-jobs/pindetails', createPinDetailsJob );
+  router.get( '/batch-jobs/rotate', rotateBatchJob );
 }
 
 module.exports = addBatchJobRouting;

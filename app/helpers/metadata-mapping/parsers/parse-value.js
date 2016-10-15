@@ -1,20 +1,12 @@
 'use strict';
 
 /**
- * module variables
- */
-var iso8601;
-var licenseurl;
-var marc21LanguageCodes;
-var mediatype;
-
-/**
  * module dependencies
  */
-iso8601 = require( './iso-8601' );
-licenseurl = require( './creative-commons-url' );
-marc21LanguageCodes = require( './marc21-language-codes' );
-mediatype = require( './mediatype' );
+var iso8601 = require( './iso-8601' );
+var licenseurl = require( './creative-commons-url' );
+var marc21LanguageCodes = require( './marc21-language-codes' );
+var mediatype = require( './mediatype' );
 
 /**
  * @param {string} format

@@ -29,34 +29,41 @@ function rotateBatchJob() {
   return getBatchJobDirectories( 'processing' )
     .then(
       /**
-       * @param {Array} directories
+       * @param {Object} directories_files
        * @returns {Promise|string}
        */
-      function ( directories ) {
-        if ( !Array.isArray( directories ) || directories.length === 0 ) {
+      function ( directories_files ) {
+        if (
+          !Array.isArray( directories_files.directories ) ||
+          directories_files.directories.length === 0
+        ) {
           return getBatchJobDirectories( 'queued' );
         }
 
-        return path.join( config.batch_jobs.directory, 'processing', directories[ 0 ] );
+        return path.join(
+          config.batch_jobs.directory, 'processing', directories_files.directories[ 0 ]
+        );
       }
     )
     .then(
       /**
-       * @param {string|Array} directories
+       * @param {string|Object} directories_files
+       * @param {Array} directories_files.directories
+       *
        * @returns {string|Promise.<string>}
        */
-      function ( directories ) {
-        if ( typeof directories === 'string' ) {
-          return directories;
+      function ( directories_files ) {
+        if ( typeof directories_files === 'string' ) {
+          return directories_files;
         }
 
-        if ( directories.length < 1 ) {
+        if ( directories_files.directories.length < 1 ) {
           return 'no batch jobs to rotate';
         }
 
         return rename(
-          path.join( config.batch_jobs.directory, 'queued', directories[ 0 ] ),
-          path.join( config.batch_jobs.directory, 'processing', directories[ 0 ] )
+          path.join( config.batch_jobs.directory, 'queued', directories_files.directories[ 0 ] ),
+          path.join( config.batch_jobs.directory, 'processing', directories_files.directories[ 0 ] )
         );
       }
     )

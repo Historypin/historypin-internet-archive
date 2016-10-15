@@ -11,30 +11,33 @@ var loadJsonFile = require( 'load-json-file' );
  *
  * @param {string} state
  * @throws {Error}
- * @returns {Promise.<string|{batch_job: Object, path: string}>}
+ * @returns {Promise.<string|{batch_job: Object, location: Object}>}
  */
 function getBatchJobObject( state ) {
-  var cached_path;
+  var cached_location;
 
   return getBatchJobPath( state )
     .then(
       /**
-       * @param {string} path
+       * @param {string|Object} location
+       * @param {string} location.path
+       *
+       * @returns {string|Object}
        */
-      function ( path ) {
-        if ( !path ) {
+      function ( location ) {
+        if ( !location ) {
           return '';
         }
 
-        cached_path = path;
+        cached_location = location;
 
-        return loadJsonFile( path );
+        return loadJsonFile( location.path );
       }
     )
     .then(
       /**
        * @param {Object} batch_job
-       * @returns {string|{batch_job: Object, path: string}}
+       * @returns {string|{batch_job: Object, location: Object}}
        */
       function ( batch_job ) {
         if ( !batch_job ) {
@@ -43,7 +46,7 @@ function getBatchJobObject( state ) {
 
         return {
           batch_job: batch_job,
-          path: cached_path
+          location: cached_location
         };
       }
     )

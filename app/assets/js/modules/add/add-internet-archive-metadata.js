@@ -1,27 +1,19 @@
 'use strict';
 
 /**
- * module variables
- */
-var getMappedMetadataValue;
-
-/**
  * module dependencies
  */
-getMappedMetadataValue = require( './../get/get-mapped-metadata-value' );
+var getMappedMetadata = require(
+  '../../../../helpers/metadata-mapping/get-mapped-metadata'
+);
 
 /**
  * @param hp_item
  * @param app_data
  */
 module.exports = function addInternetArchiveMetadata( hp_item, app_data ) {
-  var custom_field;
-  var custom_property;
-  var fields;
   var html;
-  var i;
-  var ia_property;
-  var mapped_metadata_value;
+  var mapped_metadata;
 
   html = '';
 
@@ -33,35 +25,26 @@ module.exports = function addInternetArchiveMetadata( hp_item, app_data ) {
     return html;
   }
 
-  html = '<tbody>';
+  mapped_metadata = getMappedMetadata( app_data.mapping, hp_item );
 
-  for ( ia_property in app_data.mapping ) {
-    mapped_metadata_value = '';
+  html = Object.keys( mapped_metadata ).reduce(
+    function ( acc, ia_property ) {
+      acc +=
+        '<tr><td>%property</td><td>%value</td></tr>'
+          .replace( '%property', ia_property )
+          .replace( '%value', mapped_metadata[ ia_property ] );
 
-    if ( !app_data.mapping.hasOwnProperty( ia_property ) ) {
-      continue;
-    }
-
-    fields = app_data.mapping[ ia_property ];
-
-    if ( fields instanceof Array ) {
-      for ( i = 0; i < fields.length; i += 1 ) {
-        custom_field = fields[ i ];
-        custom_property = Object.keys( custom_field )[ 0 ];
-        mapped_metadata_value = getMappedMetadataValue( hp_item, custom_field[ custom_property ] );
-        html += '<tr><td>' + custom_property + '</td><td>' + mapped_metadata_value + '</td></tr>';
-
-        if ( custom_property === 'hp-media-url' ) {
-          html += '<tr><td></td><td><a href="' + mapped_metadata_value + '" target="_blank"><img src="' + mapped_metadata_value + '" width="300"/></a></td></tr>';
-        }
+      if ( ia_property === 'hp-media-url' ) {
+        acc +=
+          '<tr><td></td><td><a href="%value" target="_blank">' +
+          '<img src="%value" width="300"/></a></td></tr>'
+            .replace( /%value/g, mapped_metadata[ ia_property ] );
       }
 
-      continue;
-    }
-
-    mapped_metadata_value = getMappedMetadataValue( hp_item, app_data.mapping[ ia_property ] );
-    html += '<tr><td>' + ia_property + '</td><td>' + mapped_metadata_value + '</td></tr>';
-  }
+      return acc;
+    },
+    '<tbody>'
+  );
 
   html += '</tbody>';
   app_data.metadata.internet_archive.innerHTML = html;

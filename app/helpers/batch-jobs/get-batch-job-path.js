@@ -12,23 +12,32 @@ var path = require( 'path' );
  *
  * @param {string} state
  * @throws {Error}
- * @returns {Promise.<string>}
+ * @returns {Promise.<string, { directory: string, path: string }>}
  */
 function getBatchJobPath( state ) {
   return getBatchJobDirectories( state )
     .then(
       /**
-       * @param {Array} directories
+       * @param {Object} directories_files
        * @returns {string}
        */
-      function ( directories ) {
-        if ( !Array.isArray( directories ) || directories.length === 0 ) {
+      function ( directories_files ) {
+        if (
+          !Array.isArray( directories_files.directories ) ||
+          directories_files.directories.length === 0
+        ) {
           return '';
         }
 
-        return path.join(
-          config.batch_jobs.directory, state, directories[ 0 ], config.batch_jobs.file
-        );
+        return {
+          directory: path.join(
+            config.batch_jobs.directory, state, directories_files.directories[ 0 ]
+          ),
+          path: path.join(
+            config.batch_jobs.directory, state, directories_files.directories[ 0 ],
+            config.batch_jobs.file
+          )
+        };
       }
     )
     .catch(

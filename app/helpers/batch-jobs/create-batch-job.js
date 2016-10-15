@@ -31,6 +31,7 @@ function createBatchJob( req ) {
     count: parseInt( req.body.count, 10 ),
     date: date,
     pins: {
+      'all-pins-queued': false,
       ids: [],
       page: 0
     },

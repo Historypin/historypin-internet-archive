@@ -7,7 +7,7 @@ var config = require( '../../config' );
 var getDefaultContext = require( '../../contexts/default' );
 var getGenericPageContext = require( '../../contexts/pages/generic' );
 var getPageContext = require( '../../contexts/pages/batch-jobs' );
-var getDirectories = require( '../../helpers/get-directories' );
+var getDirectoriesFiles = require( '../../helpers/get-directories-files' );
 var getBatchJobs = require( '../../helpers/batch-jobs/get-batch-jobs' );
 var path = require( 'path' );
 var Promise = require( 'bluebird' );
@@ -28,13 +28,13 @@ function pageBatchJobs( req, res, next ) {
   context = getGenericPageContext( req, context );
   context = getPageContext( context );
 
-  getDirectories( path.join( config.batch_jobs.directory, state ) )
+  getDirectoriesFiles( path.join( config.batch_jobs.directory, state ) )
     .then(
       /**
-       * @param {Array} directory_names
+       * @param {Object} directories_files
        */
-      function ( directory_names ) {
-        return getBatchJobs( directory_names, state );
+      function ( directories_files ) {
+        return getBatchJobs( directories_files.directories, state );
       }
     )
     .then(
@@ -46,6 +46,10 @@ function pageBatchJobs( req, res, next ) {
       }
     )
     .then(
+      /**
+       * @param {Object} batch_jobs
+       * @returns {undefined}
+       */
       function( batch_jobs ) {
         context.batch_jobs = batch_jobs;
         res.render( context.template, context );

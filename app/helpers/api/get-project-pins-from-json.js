@@ -5,7 +5,7 @@
  * @param {Array} json.items
  * @returns {Array}
  */
-function getPinsFromJSON( json ) {
+function getProjectPinsFromJSON( json ) {
   return json.items.reduce(
     function ( acc, item ) {
       acc.push( item[ 0 ] );
@@ -15,4 +15,4 @@ function getPinsFromJSON( json ) {
   );
 }
 
-module.exports = getPinsFromJSON;
+module.exports = getProjectPinsFromJSON;

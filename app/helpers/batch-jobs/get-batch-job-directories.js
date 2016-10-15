@@ -4,7 +4,7 @@
  * module dependencies
  */
 var config = require( '../../config/index' );
-var getDirectories = require( '../get-directories' );
+var getDirectoriesFiles = require( '../get-directories-files' );
 var path = require( 'path' );
 
 /**
@@ -12,17 +12,17 @@ var path = require( 'path' );
  *
  * @param {string} state
  * @throws {Error}
- * @returns {Promise.<Array>}
+ * @returns {Promise.<{ directories: Array, files: Array }>}
  */
 function getBatchJobDirectories( state ) {
-  return getDirectories( path.join( config.batch_jobs.directory, state ) )
+  return getDirectoriesFiles( path.join( config.batch_jobs.directory, state ) )
     .then(
       /**
-       * @param {Array} directories
-       * @returns {Array}
+       * @param {Object} directories_files
+       * @returns {Object}
        */
-      function ( directories ) {
-        return directories;
+      function ( directories_files ) {
+        return directories_files;
       }
     )
     .catch(

@@ -10,6 +10,7 @@ function rotateBatchJobPage( req, res, next ) {
     .then(
       /**
        * @param {string} directory absolute path to current processing batch job
+       * @returns {undefined}
        */
       function ( directory ) {
         res.send( directory );
