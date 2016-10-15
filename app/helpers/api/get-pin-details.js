@@ -3,8 +3,6 @@
 /**
  * module dependencies
  */
-var config = require( '../../config' );
-var difference = require( 'lodash.difference' );
 var getPinDetailRequestOptions = require( '../api/get-pin-detail-request-options' );
 var getApiPromise = require( 'node-historypin' ).getApiPromise;
 var Promise = require( 'bluebird' );
@@ -14,24 +12,18 @@ var Promise = require( 'bluebird' );
  * an array
  *
  * @param {string} project
- * @param {Array} ids
- * @param {Array} files
+ * @param {Array} pin_ids
  *
  * @throws {Error}
  *
- * @returns {Array}
+ * @returns {Promise.<[{ pin:{} }]>}
  */
-function getPinDetails( project, ids, files ) {
+function getPinDetails( project, pin_ids ) {
   var promises;
-  var pin_ids;
-
-  // @todo: need to sort out changing the files results to nrs that match the pin ids
-  pin_ids = difference( ids, files );
-  pin_ids = pin_ids.slice( 0, config.metadata_jobs.job_creation_throttle );
 
   promises = pin_ids.reduce(
-    function ( acc, id ) {
-      acc.push( getApiPromise( getPinDetailRequestOptions( project, id ) ) );
+    function ( acc, pin_id ) {
+      acc.push( getApiPromise( getPinDetailRequestOptions( project, pin_id ) ) );
       return acc;
     },
     []
@@ -41,7 +33,7 @@ function getPinDetails( project, ids, files ) {
     .then(
       /**
        * @param {Array} results
-       * @returns {Array}
+       * @returns {[{ pin:{} }]}
        */
       function ( results ) {
         return results.reduce(
@@ -54,7 +46,7 @@ function getPinDetails( project, ids, files ) {
            * @returns {Array}
            */
           function ( acc, result ) {
-            acc.push( JSON.parse( result.body ) );
+            acc.push( { pin: JSON.parse( result.body ) } );
 
             return acc;
           },

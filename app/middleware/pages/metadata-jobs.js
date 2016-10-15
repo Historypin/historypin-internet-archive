@@ -3,7 +3,7 @@
 /**
  * module dependencies
  */
-var createPinDetailsJob = require( '../../helpers/pin-details-jobs/create-pin-details-job' );
+var createPinDetailsJob = require( '../../helpers/metadata-jobs/create-metadata-jobs' );
 
 /**
  * @param {IncomingMessage} req
