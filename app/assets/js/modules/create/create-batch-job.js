@@ -24,7 +24,7 @@ function updateUI( app_data ) {
 /**
  * @param {Object} app_data
  */
-module.exports = function createBatchJob( app_data ) {
+function createBatchJob( app_data ) {
   var data;
   var prompt;
   var response;
@@ -50,8 +50,8 @@ module.exports = function createBatchJob( app_data ) {
         response = lib.extractXhrResponse( xhr );
         response = JSON.parse( response );
 
-        if ( response.created !== true ) {
-          throw new Error( 'unknown error' );
+        if ( !response.batch_job ) {
+          throw new Error( 'check server error log' );
         }
 
         app_data.metadata.row.innerHTML = '<h2>batch job created</h2><a href="/batch-jobs">batch jobs</a>';
@@ -63,4 +63,6 @@ module.exports = function createBatchJob( app_data ) {
         console.log( err );
       }
     );
-};
+}
+
+module.exports = createBatchJob;

@@ -10,11 +10,10 @@ var path = require( 'path' );
 var Promise = require( 'bluebird' );
 
 /**
- * given an absolute directory path, return an object containing an array of the directory names,
- * and file names, not their absolute paths, within that absolute directory path
+ * given a directory path, return an object containing an array of the directory and file names
  *
  * @param {string} directory absolute path
- * @returns {Promise.<{ directories: Array, files: Array }|Error>}
+ * @returns {Promise.<{ directories:[], files:[] }|Error>}
  */
 function getDirectoriesFiles( directory ) {
   return new Promise(
@@ -27,6 +26,11 @@ function getDirectoriesFiles( directory ) {
         resolve(
           fs.readdirSync( directory )
             .reduce(
+              /**
+               * @param {{ directories:[], filed:[] }} acc
+               * @param {string} file
+               * @returns {{ directories:[], filed:[] }}
+               */
               function ( acc, file ) {
                 var stat = fs.statSync( path.join( directory, file ) );
 

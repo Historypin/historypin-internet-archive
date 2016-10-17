@@ -13,16 +13,21 @@ var createBatchJobHelper = require( '../../helpers/batch-jobs/create-batch-job' 
  *
  * @param {Function} next
  */
-function createBatchJob( req, res, next ) {
+function createBatchJob( req, res ) {
   createBatchJobHelper( req )
     .then(
+      /**
+       * @param {string} result
+       */
       function( result ) {
         res.send( result );
       }
     )
     .catch(
       function( err ) {
-        next( err );
+        console.error( err );
+        console.error( err.stack );
+        res.status( 500 ).send( err );
       }
     );
 }

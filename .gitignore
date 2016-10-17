@@ -1,6 +1,6 @@
 app/config/development.js
 app/config/production.js
-/batch-jobs/**/*.json
+/batch-jobs
 coverage
 node_modules
 public/css/styles.css

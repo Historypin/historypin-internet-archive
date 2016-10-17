@@ -29,7 +29,7 @@
     "hjs": "0.0.6",
     "load-json-file": "2.0.0",
     "lodash.difference": "4.5.0",
-    "mkdir-bluebird": "1.0.14",
+    "mkdir-p-bluebird": "1.0.6",
     "morgan": "1.7.0",
     "node-accepted-languages": "git+https://github.com/dan-nl/node-accepted-languages.git",
     "node-error-logger": "git+https://github.com/dan-nl/node-error-logger.git",
