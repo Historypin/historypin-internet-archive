@@ -15,7 +15,7 @@ var path = require( 'path' );
  * @returns {Promise.<{ directories: Array, files: Array }>}
  */
 function getBatchJobDirectories( state ) {
-  return getDirectoriesFiles( path.join( config.batch_jobs.directory, state ) )
+  return getDirectoriesFiles( path.join( config.batch_job.directory.path, state ) )
     .then(
       /**
        * @param {Object} directories_files

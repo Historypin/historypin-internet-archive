@@ -8,6 +8,7 @@ var router = express.Router();
 var ajaxRouting = require( './ajax' );
 var batchJobsRouting = require( './batch-jobs' );
 var homeRouting = require( './home' );
+var metadataJobsRouting = require( './metadata-jobs' );
 var path = require( 'path' );
 
 module.exports = function routes( app ) {
@@ -15,5 +16,6 @@ module.exports = function routes( app ) {
   ajaxRouting( router );
   batchJobsRouting( router );
   homeRouting( router );
+  metadataJobsRouting( router );
   app.use( router );
 };

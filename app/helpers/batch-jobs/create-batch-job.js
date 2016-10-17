@@ -20,11 +20,11 @@ function setupBatchJob( req ) {
   var project = encodeURIComponent( req.body.project.trim() );
   var timestamp = Date.now();
 
-  batch_job.count = parseInt( req.body.count, 10 );
   batch_job.date = new Date( timestamp ).toUTCString();
   batch_job.directory.name = project + '-' + timestamp;
-  batch_job.directory.path = config.batch_job.directory.path;
+  batch_job.directory.path = path.join( config.batch_job.directory.path, config.batch_job.state.initial );
   batch_job.filename = config.batch_job.filename;
+  batch_job.pins.count = parseInt( req.body.count, 10 );
   batch_job.project = project;
   batch_job.state = config.batch_job.state;
   batch_job.timestamp = timestamp;

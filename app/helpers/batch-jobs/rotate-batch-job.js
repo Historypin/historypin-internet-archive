@@ -4,7 +4,8 @@
  * module dependencies
  */
 var config = require( '../../config/index' );
-var getBatchJobDirectories = require( './get-batch-job-directories' );
+var createBatchJobDirectories = require( './create-batch-job-directories' );
+var getDirectoriesFiles = require( '../get-directories-files' );
 var path = require( 'path' );
 var rename = require( 'rename-bluebird' );
 
@@ -26,30 +27,49 @@ var rename = require( 'rename-bluebird' );
  * @returns {Promise.<string>}
  */
 function rotateBatchJob() {
-  return getBatchJobDirectories( 'processing' )
+  return getDirectoriesFiles( path.join( config.batch_job.directory.path, 'processing' ) )
+    .catch(
+      /**
+       * @param {Error} err
+       * @throws {Error}
+       * @returns {Promise.<{ directories:[], files:[] }>}
+       */
+      function ( err ) {
+        if ( err.code === 'ENOENT' ) {
+          return createBatchJobDirectories()
+            .then(
+              /**
+               * @returns {Promise}
+               */
+              function () {
+                return getDirectoriesFiles(
+                  path.join( config.batch_job.directory.path, 'processing' )
+                );
+              }
+            );
+        }
+
+        throw err;
+      }
+    )
     .then(
       /**
-       * @param {Object} directories_files
-       * @returns {Promise|string}
+       * @param {{ directories:[], files:[] }} directories_files
+       * @returns {Promise.<{ directories:[], files:[] }>|string}
        */
       function ( directories_files ) {
-        if (
-          !Array.isArray( directories_files.directories ) ||
-          directories_files.directories.length === 0
-        ) {
-          return getBatchJobDirectories( 'queued' );
+        if ( directories_files.directories.length === 0 ) {
+          return getDirectoriesFiles( path.join( config.batch_job.directory.path, 'queued' ) );
         }
 
         return path.join(
-          config.batch_jobs.directory, 'processing', directories_files.directories[ 0 ]
+          config.batch_job.directory.path, 'processing', directories_files.directories[ 0 ]
         );
       }
     )
     .then(
       /**
-       * @param {string|Object} directories_files
-       * @param {Array} directories_files.directories
-       *
+       * @param {string|{ directories:[], files:[] }} directories_files
        * @returns {string|Promise.<string>}
        */
       function ( directories_files ) {
@@ -58,13 +78,27 @@ function rotateBatchJob() {
         }
 
         if ( directories_files.directories.length < 1 ) {
-          return 'no batch jobs to rotate';
+          return {
+            message: 'no batch jobs to rotate'
+          };
         }
 
+        // @todo: change batch_job.directory.path
+        // @todo: change state in batch_job or remove current state from it and just rely on directory?
+
         return rename(
-          path.join( config.batch_jobs.directory, 'queued', directories_files.directories[ 0 ] ),
-          path.join( config.batch_jobs.directory, 'processing', directories_files.directories[ 0 ] )
+          path.join( config.batch_job.directory.path, 'queued', directories_files.directories[ 0 ] ),
+          path.join( config.batch_job.directory.path, 'processing', directories_files.directories[ 0 ] )
         );
+      }
+    )
+    .then(
+      /**
+       * @param {string} result
+       * @returns {string}
+       */
+      function ( result ) {
+        return { processing: result };
       }
     )
     .catch(

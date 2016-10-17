@@ -3,14 +3,11 @@
 /**
  * module dependencies
  */
-var config = require( '../../config' );
 var getDefaultContext = require( '../../contexts/default' );
 var getGenericPageContext = require( '../../contexts/pages/generic' );
 var getPageContext = require( '../../contexts/pages/batch-jobs' );
-var getDirectoriesFiles = require( '../../helpers/get-directories-files' );
 var getBatchJobs = require( '../../helpers/batch-jobs/get-batch-jobs' );
-var path = require( 'path' );
-var Promise = require( 'bluebird' );
+// var getBatchJobsMetadataCounts = require( '../../helpers/metadata-jobs/get-batch-jobs-metadata-counts' );
 
 /**
  * @param {IncomingMessage} req
@@ -22,35 +19,40 @@ var Promise = require( 'bluebird' );
  */
 function pageBatchJobs( req, res, next ) {
   var context;
-  var state = 'processing';
 
   context = getDefaultContext( req );
   context = getGenericPageContext( req, context );
   context = getPageContext( context );
 
-  getDirectoriesFiles( path.join( config.batch_jobs.directory, state ) )
+  /**
+   * get batch jobs in the processing directory
+   */
+  getBatchJobs( 'processing' )
     .then(
       /**
-       * @param {Object} directories_files
+       * @param {[{}]} batch_jobs
+       * @returns {[{}]}
        */
-      function ( directories_files ) {
-        return getBatchJobs( directories_files.directories, state );
+      function ( batch_jobs ) {
+        return batch_jobs;
+        // return getBatchJobsMetadataCounts( batch_jobs );
       }
     )
     .then(
       /**
-       * @param {Array} promises
+       * @param {[{}]} batch_jobs
+       * @returns {[{}]}
        */
-      function ( promises ) {
-        return Promise.all( promises );
+      function ( batch_jobs ) {
+        return batch_jobs;
       }
     )
     .then(
       /**
-       * @param {Object} batch_jobs
+       * @param {[{}]} batch_jobs
        * @returns {undefined}
        */
-      function( batch_jobs ) {
+      function ( batch_jobs ) {
         context.batch_jobs = batch_jobs;
         res.render( context.template, context );
       }

@@ -1,5 +1,8 @@
 'use strict';
 
+/**
+ * @class
+ */
 var batch_job = {
   date: '',
   directory: {

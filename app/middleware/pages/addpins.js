@@ -3,7 +3,8 @@
 /**
  * module dependencies
  */
-var addPinsToBatchJob = require( '../../helpers/batch-jobs/add-pins-to-batch-job' );
+var addPinsToProcessingBatchJob = require( '../../helpers/batch-jobs/add-pins-to-processing-batch-job' );
+var getBatchJobs = require( '../../helpers/batch-jobs/get-batch-jobs' );
 
 /**
  * @param {IncomingMessage} req
@@ -14,11 +15,33 @@ var addPinsToBatchJob = require( '../../helpers/batch-jobs/add-pins-to-batch-job
  * @param {Function} next
  * @returns {undefined}
  */
-function addPinsToBatchJobPage( req, res, next ) {
-  addPinsToBatchJob()
+function addPinsToProcessingBatchJobPage( req, res, next ) {
+  getBatchJobs( 'processing' )
     .then(
       /**
-       * @param {string|cached_result} result
+       * @param {[{}]} result
+       * @returns {{ message: string }|Promise.<{}>}
+       */
+      function ( result ) {
+        var batch_job;
+
+        if ( result.length < 1 ) {
+          return { message: 'no processing batch job' };
+        }
+
+        batch_job = result[ 0 ];
+
+        if ( batch_job.pins.ids.length === batch_job.pins.count ) {
+          // @todo: mark batch_job.pins that all pins have been added?
+          return { message: 'all pins have been added' };
+        }
+
+        return addPinsToProcessingBatchJob( batch_job );
+      }
+    )
+    .then(
+      /**
+       * @param {{ message: string }|Promise.<batch_job>} result
        * @returns {undefined}
        */
       function ( result ) {
@@ -35,4 +58,4 @@ function addPinsToBatchJobPage( req, res, next ) {
     );
 }
 
-module.exports = addPinsToBatchJobPage;
+module.exports = addPinsToProcessingBatchJobPage;

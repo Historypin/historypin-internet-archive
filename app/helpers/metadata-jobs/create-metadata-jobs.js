@@ -5,7 +5,7 @@
  */
 var config = require( '../../config' );
 var difference = require( 'lodash.difference' );
-var getBatchJobObject = require( '../batch-jobs/get-batch-job-object' );
+var getBatchJobs = require( '../batch-jobs/get-batch-jobs' );
 var getDirectoriesFiles = require( '../get-directories-files' );
 var getPinDetails = require( '../api/get-pin-details' );
 var getPinDetailsMapped = require( './../pin-details-jobs/get-pin-details-mapped' );
@@ -25,7 +25,7 @@ function createMetadataJobs() {
    *
    * @returns {Promise.<Object>}
    */
-  return getBatchJobObject( 'processing' )
+  return getBatchJobs( 'processing' )
     .then(
       /**
        * get a list of the currently queued metadata batch jobs
@@ -37,7 +37,11 @@ function createMetadataJobs() {
        * @returns {Promise.<{directories: Array, files: Array}|Error>}
        */
       function ( batch_job ) {
-        project_batch_job = batch_job;
+        if ( !batch_job || batch_job.length < 1 ) {
+          return [];
+        }
+
+        project_batch_job = batch_job[ 0 ];
 
         return getDirectoriesFiles(
           path.join( project_batch_job.location.directory, 'metadata', 'queued' )
@@ -57,14 +61,14 @@ function createMetadataJobs() {
         var files;
         var pin_ids;
 
-        if ( project_batch_job.batch_job.pins[ 'all-pins-queued' ] ) {
+        if ( directories_files.length < 1 || project_batch_job.batch_job.pins[ 'all-pins-queued' ] ) {
           return [];
         }
 
         if ( directories_files.files.length === project_batch_job.count ) {
-          project_batch_job.batch_job.pins[ 'all-pins-queued' ] = true;
+          project_batch_job.pins[ 'all-pins-queued' ] = true;
 
-          return saveBatchJob( project_batch_job.location.path, project_batch_job.batch_job, [] );
+          return saveBatchJob( project_batch_job.directory.path, project_batch_job, [] );
         }
 
         files = directories_files.files.reduce(
@@ -78,7 +82,7 @@ function createMetadataJobs() {
 
         // get a diff between the currently queued metadata jobs
         // and those that still need to be created
-        pin_ids = difference( project_batch_job.batch_job.pins.ids, files );
+        pin_ids = difference( project_batch_job.pins.ids, files );
 
         // throttle the diff
         return pin_ids.slice( 0, config.metadata_jobs.job_creation_throttle );
@@ -93,8 +97,12 @@ function createMetadataJobs() {
        * @returns {Promise.<[{ pin:{} }]>}
        */
       function ( pin_ids ) {
+        if ( pin_ids.length < 1 ) {
+          return pin_ids;
+        }
+
         return getPinDetails(
-          project_batch_job.batch_job.project,
+          project_batch_job.project,
           pin_ids
         );
       }
@@ -108,6 +116,10 @@ function createMetadataJobs() {
        * @returns {Promise.<[{ pin:{}, metadata_mapped:{} }]>}
        */
       function ( metadata_jobs ) {
+        if ( metadata_jobs.length < 1 ) {
+          return metadata_jobs;
+        }
+
         return getPinDetailsMapped( metadata_jobs );
       }
     )
@@ -119,6 +131,10 @@ function createMetadataJobs() {
        * @returns {Promise.<[{ pin:{}, metadata_mapped:{} }]>}
        */
       function ( metadata_jobs ) {
+        if ( metadata_jobs.length < 1 ) {
+          return metadata_jobs;
+        }
+
         return saveMetadataJobs(
           path.join( project_batch_job.location.directory, 'metadata', 'queued' ),
           metadata_jobs
