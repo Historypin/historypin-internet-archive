@@ -3,7 +3,7 @@
 /**
  * module dependencies
  */
-var createPinDetailsJob = require( '../../helpers/metadata-jobs/create-metadata-jobs' );
+var createMetadataJobs = require( '../../helpers/metadata-jobs/create-metadata-jobs' );
 
 /**
  * @param {IncomingMessage} req
@@ -15,7 +15,7 @@ var createPinDetailsJob = require( '../../helpers/metadata-jobs/create-metadata-
  * @returns {undefined}
  */
 function pinDetailsJob( req, res, next ) {
-  createPinDetailsJob()
+  createMetadataJobs()
     .then(
       /**
        * @param {Object} result
