@@ -10,8 +10,6 @@ var createBatchJobHelper = require( '../../helpers/batch-jobs/create-batch-job' 
  *
  * @param {ServerResponse} res
  * @param {Function} res.send
- *
- * @param {Function} next
  */
 function createBatchJob( req, res ) {
   createBatchJobHelper( req )
