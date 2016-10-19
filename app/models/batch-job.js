@@ -12,6 +12,7 @@ var batch_job = {
   filename: '',
   pins: {
     'all-pins-added': false,
+    'all-metadata-jobs-queued': false,
     count: 0,
     ids: [],
     page: 0

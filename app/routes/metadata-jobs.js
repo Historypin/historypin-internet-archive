@@ -3,14 +3,14 @@
 /**
  * module dependenices
  */
-var metadataJobs = require( '../middleware/pages/metadata-jobs' );
+var metadataJobsCreate = require( '../middleware/pages/metadata-jobs-create' );
 
 /**
  * @param {Function} router
  * @param {Function} router.get
  */
 function metadataJobsRouting( router ) {
-  router.get( '/metadata-jobs', metadataJobs );
+  router.get( '/metadata-jobs', metadataJobsCreate );
 }
 
 module.exports = metadataJobsRouting;
