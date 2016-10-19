@@ -31,8 +31,7 @@ function addPinsToProcessingBatchJobPage( req, res, next ) {
 
         batch_job = result[ 0 ];
 
-        if ( batch_job.pins.ids.length === batch_job.pins.count ) {
-          // @todo: mark batch_job.pins that all pins have been added?
+        if ( batch_job.pins[ 'all-pins-added' ] ) {
           return { message: 'all pins have been added' };
         }
 

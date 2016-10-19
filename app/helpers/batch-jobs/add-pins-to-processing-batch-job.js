@@ -6,6 +6,7 @@
 var getProjectPinIds = require( './../api/get-project-pin-ids' );
 var saveBatchJob = require( './save-batch-job' );
 var path = require( 'path' );
+var uniq = require( 'lodash.uniq' );
 
 /**
  * retrieves the current processing batch job, adds batch job project pin ids if the current
@@ -31,13 +32,15 @@ function addPinsToProcessingBatchJob( batch_job ) {
           return '';
         }
 
-        // @todo: remove duplicates if they exist
-        cached_batch_job.pins.ids = cached_batch_job.pins.ids.concat( pin_ids );
+        cached_batch_job.pins.ids = uniq( cached_batch_job.pins.ids.concat( pin_ids ) );
+
+        if ( cached_batch_job.pins.ids.length === cached_batch_job.pins.count ) {
+          cached_batch_job.pins[ 'all-pins-added' ] = true;
+        }
 
         return saveBatchJob(
           path.join(
             cached_batch_job.directory.path,
-            'processing',
             cached_batch_job.directory.name,
             cached_batch_job.filename
           ),
@@ -52,7 +55,7 @@ function addPinsToProcessingBatchJob( batch_job ) {
        */
       function ( result ) {
         if ( typeof result === 'string' ) {
-          return { message: '' };
+          return { message: 'no pins to add' };
         }
 
         return cached_batch_job;

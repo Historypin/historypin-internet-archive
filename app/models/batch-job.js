@@ -11,6 +11,7 @@ var batch_job = {
   },
   filename: '',
   pins: {
+    'all-pins-added': false,
     count: 0,
     ids: [],
     page: 0
