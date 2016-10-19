@@ -21,7 +21,7 @@ function setupBatchJob( req ) {
   var timestamp = Date.now();
 
   batch_job.date = new Date( timestamp ).toUTCString();
-  batch_job.directory.name = project + '-' + timestamp;
+  batch_job.directory.name = timestamp + '-' + project;
   batch_job.directory.path = path.join( config.batch_job.directory.path, config.batch_job.state.initial );
   batch_job.filename = config.batch_job.filename;
   batch_job.pins.count = parseInt( req.body.count, 10 );
