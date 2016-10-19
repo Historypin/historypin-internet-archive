@@ -44,7 +44,6 @@ function createBatchJob( req ) {
 
   batch_job_directory = path.join(
     batch_job.directory.path,
-    batch_job.state.initial,
     batch_job.directory.name
   );
 
