@@ -6,8 +6,10 @@
 var config = require( '../../config/index' );
 var createBatchJobDirectories = require( './create-batch-job-directories' );
 var getDirectoriesFiles = require( '../get-directories-files' );
+var loadJsonFile = require( 'load-json-file' );
 var path = require( 'path' );
 var rename = require( 'rename-bluebird' );
+var writeJsonFile = require( 'write-json-file' );
 
 /**
  * rotates batch jobs from queue state to processing state. note: will not rotate a batch job if
@@ -27,6 +29,9 @@ var rename = require( 'rename-bluebird' );
  * @returns {Promise.<string>}
  */
 function rotateBatchJob() {
+  var current_directory;
+  var destination_directory;
+
   return getDirectoriesFiles( path.join( config.batch_job.directory.path, 'processing' ) )
     .catch(
       /**
@@ -70,7 +75,7 @@ function rotateBatchJob() {
     .then(
       /**
        * @param {string|{ directories:[], files:[] }} directories_files
-       * @returns {string|Promise.<string>}
+       * @returns {string|Promise.<Object>}
        */
       function ( directories_files ) {
         if ( typeof directories_files === 'string' ) {
@@ -78,24 +83,58 @@ function rotateBatchJob() {
         }
 
         if ( directories_files.directories.length < 1 ) {
-          return {
-            message: 'no batch jobs to rotate'
-          };
+          return 'no batch jobs to rotate to processing';
         }
 
-        // @todo: change batch_job.directory.path
-        // @todo: change state in batch_job or remove current state from it and just rely on directory?
+        current_directory = path.join(
+          config.batch_job.directory.path, 'queued', directories_files.directories[ 0 ]
+        );
+
+        destination_directory = path.join(
+          config.batch_job.directory.path, 'processing', directories_files.directories[ 0 ]
+        );
+
+        return loadJsonFile(
+          path.join( current_directory, config.batch_job.filename )
+        );
+      }
+    )
+    .then(
+      /**
+       * @param {batch_job} batch_job
+       * @returns {string|Promise.<undefined>}
+       */
+      function ( batch_job ) {
+        if ( typeof batch_job === 'string' ) {
+          return batch_job;
+        }
+
+        batch_job.directory.path = path.join( config.batch_job.directory.path, 'processing' );
+        batch_job.state.current = 'processing';
+
+        return writeJsonFile( path.join( current_directory, config.batch_job.filename ), batch_job );
+      }
+    )
+    .then(
+      /**
+       * @param {string|undefined} result
+       * @returns {Promise.<string>}
+       */
+      function ( result ) {
+        if ( typeof result === 'string' ) {
+          return result;
+        }
 
         return rename(
-          path.join( config.batch_job.directory.path, 'queued', directories_files.directories[ 0 ] ),
-          path.join( config.batch_job.directory.path, 'processing', directories_files.directories[ 0 ] )
+          path.join( current_directory ),
+          path.join( destination_directory )
         );
       }
     )
     .then(
       /**
        * @param {string} result
-       * @returns {string}
+       * @returns {Object}
        */
       function ( result ) {
         return { processing: result };
