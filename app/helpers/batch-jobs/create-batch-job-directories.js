@@ -5,6 +5,9 @@ var mkdirp = require( 'mkdir-p-bluebird' );
 var path = require( 'path' );
 var Promise = require( 'bluebird' );
 
+/**
+ * @returns {Promise.<Promise[]>}
+ */
 function createBatchJobDirectories() {
   return Promise.all(
     config.batch_job.state.available.reduce(
@@ -17,26 +20,7 @@ function createBatchJobDirectories() {
       },
       []
     )
-  )
-    .then(
-      /**
-       * @param {Array} result
-       * @returns {Array}
-       */
-      function ( result ) {
-        return result;
-      }
-    )
-    .catch(
-      /**
-       * @param {Error} err
-       * @throws {Error}
-       * @returns {undefined}
-       */
-      function ( err ) {
-        throw err;
-      }
-    );
+  );
 }
 
 module.exports = createBatchJobDirectories;

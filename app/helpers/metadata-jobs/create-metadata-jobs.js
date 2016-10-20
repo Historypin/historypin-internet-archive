@@ -9,7 +9,7 @@ var difference = require( 'lodash.difference' );
 var getBatchJobs = require( '../batch-jobs/get-batch-jobs' );
 var getDirectoriesFiles = require( '../get-directories-files' );
 var getPinDetails = require( '../api/get-pin-details' );
-var getPinDetailsMapped = require( './../pin-details-jobs/get-pin-details-mapped' );
+var getPinDetailsMapped = require( '../pins/get-pin-details-mapped' );
 var path = require( 'path' );
 var saveMetadataJobs = require( './save-metadata-jobs' );
 var writeJsonFile = require( 'write-json-file' );
@@ -19,62 +19,63 @@ var writeJsonFile = require( 'write-json-file' );
  * @returns {Promise.<string|{batch_job: Object, path: string}>}
  */
 function createMetadataJobs() {
+  var directory_metadata_queued;
+  var pin_ids_added;
   var project_batch_job;
+  var promise_result;
 
   /**
    * get the current project batch job in the processing directory
    *
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<{ message: string }|batch_job>}
    */
   return getBatchJobs( 'processing' )
     .then(
       /**
        * get a list of the currently queued metadata batch jobs
        *
-       * @param {Object} batch_job
-       * @param {Object} batch_job.location
-       * @param {string} batch_job.location.directory
+       * @param {batch_job} batch_job
        *
-       * @returns {Promise.<{directories: Array, files: Array}|Error>}
+       * @returns {Promise.<{directories: string[], files: string[]}>|undefined}
        */
       function ( batch_job ) {
-        if ( !batch_job || batch_job.length < 1 ) {
-          return [];
+        if ( !Array.isArray( batch_job ) || batch_job.length < 1 ) {
+          promise_result = { message: 'no batch jobs to process' };
+          return;
         }
 
         project_batch_job = batch_job[ 0 ];
 
         if ( project_batch_job.pins[ 'all-metadata-jobs-queued' ] ) {
-          return { message: 'all metadata jobs have been queued' };
+          promise_result = { message: 'all metadata jobs have been queued' };
+          return;
         }
 
-        return getDirectoriesFiles(
-          path.join( project_batch_job.directory.path, 'metadata', 'queued' )
+        directory_metadata_queued = path.join(
+          project_batch_job.directory.path, project_batch_job.directory.name, 'metadata', 'queued'
         );
+
+        return getDirectoriesFiles( directory_metadata_queued );
       }
     )
     .catch(
       /**
        * @param {Error} err
        * @throws {Error}
-       * @returns {Promise.<{ directories:[], files:[] }>}
+       * @returns {Promise.<{ directories: string[], files: string[] }>}
        */
       function ( err ) {
         if ( err.code === 'ENOENT' ) {
+          /**
+           * @returns {Promise.<Promise[]>}
+           */
           return createMetadataJobDirectories( project_batch_job )
             .then(
               /**
-               * @returns {Promise}
+               * @returns {Promise.<{ directories: string[], files: string[] }>}
                */
               function () {
-                return getDirectoriesFiles(
-                  path.join(
-                    project_batch_job.directory.path,
-                    project_batch_job.directory.name,
-                    'metadata',
-                    'queued'
-                  )
-                );
+                return getDirectoriesFiles( directory_metadata_queued );
               }
             );
         }
@@ -85,23 +86,26 @@ function createMetadataJobs() {
     .then(
       /**
        * create an array of metadata jobs not yet queued for processing
-       * throttle the list based on a config value
+       * throttle the list based on config.metadata_job.creation_throttle
        *
-       * @param {Object} directories_files
-       * @returns {Array}
+       * @param {Object|undefined} directories_files
+       * @param {Array} directories_files.files
+       *
+       * @returns {Array|undefined}
        */
       function ( directories_files ) {
         var files;
+
+        /**
+         * @type {Array}
+         */
         var pin_ids;
 
-        if ( !Array.isArray( directories_files.files ) ) {
-          return directories_files;
+        if ( !directories_files || !Array.isArray( directories_files.files ) ) {
+          return;
         }
 
-        if ( directories_files.files.length === project_batch_job.count ) {
-          project_batch_job.pins[ 'all-pins-queued' ] = true;
-        }
-
+        // convert directory files, 1234.json, to pin ids
         files = directories_files.files.reduce(
           function ( acc, file ) {
             acc.push( parseInt( file, 10 ) );
@@ -116,7 +120,10 @@ function createMetadataJobs() {
         pin_ids = difference( project_batch_job.pins.ids, files );
 
         // throttle the diff
-        return pin_ids.slice( 0, config.metadata_job.creation_throttle );
+        pin_ids = pin_ids.slice( 0, config.metadata_job.creation_throttle );
+        pin_ids_added = pin_ids.length;
+
+        return pin_ids;
       }
     )
     .then(
@@ -124,12 +131,17 @@ function createMetadataJobs() {
        * get pin details for each pin id provided
        * add that detail to each metadata job
        *
-       * @param {Array} pin_ids
-       * @returns {Promise.<[{ pin:{} }]>}
+       * @param {Array|undefined} pin_ids
+       * @returns {Promise.<[{ pin:{} }]>|undefined}
        */
       function ( pin_ids ) {
         if ( !Array.isArray( pin_ids ) ) {
-          return pin_ids;
+          return;
+        }
+
+        if ( pin_ids.length < 1 ) {
+          promise_result = { message: 'no pin ids to process' };
+          return;
         }
 
         return getPinDetails(
@@ -143,12 +155,12 @@ function createMetadataJobs() {
        * map the hp metadata to the ia metadata
        * add that mapping result to each metadata job
        *
-       * @param {Array.<[{ pin:{} }]>} metadata_jobs
-       * @returns {Promise.<[{ pin:{}, metadata_mapped:{} }]>}
+       * @param {Array.<[{ pin:{} }]>|undefined} metadata_jobs
+       * @returns {Promise.<[{ pin:{}, metadata_mapped:{} }]>|undefined}
        */
       function ( metadata_jobs ) {
         if ( !Array.isArray( metadata_jobs ) ) {
-          return metadata_jobs;
+          return;
         }
 
         return getPinDetailsMapped( metadata_jobs );
@@ -158,12 +170,12 @@ function createMetadataJobs() {
       /**
        * save the metadata jobs
        *
-       * @param {Array.<[{ pin:{}, metadata_mapped:{} }]>} metadata_jobs
-       * @returns {Promise.<[{ pin:{}, metadata_mapped:{} }]>}
+       * @param {Array.<[{ pin:{}, metadata_mapped:{} }]>|undefined} metadata_jobs
+       * @returns {Promise.<Promise[]>|undefined}
        */
       function ( metadata_jobs ) {
         if ( !Array.isArray( metadata_jobs ) ) {
-          return metadata_jobs;
+          return;
         }
 
         return saveMetadataJobs(
@@ -179,31 +191,56 @@ function createMetadataJobs() {
     )
     .then(
       /**
-       * @param {string} result
-       * @returns {string}
+       * get an update of the queued metadata file names
+       *
+       * @param {Promise.<Promise[]>|undefined} result
+       * @returns {Promise.<{directories: string[], files: string[]}>|undefined}
        */
       function ( result ) {
-        if ( result ) {
-          return result;
+        if ( !result ) {
+          return;
         }
 
-        return writeJsonFile(
-          path.join(
-            project_batch_job.directory.path,
-            project_batch_job.directory.name,
-            project_batch_job.filename
-          ),
-          project_batch_job
-        );
+        return getDirectoriesFiles( directory_metadata_queued );
       }
     )
     .then(
       /**
-       * @param {string} result
-       * @returns {string}
+       * if all metadata jobs have been queued, update the batch-job.json
+       *
+       * @param {Promise.<{directories: string[], files: string[]}>|undefined} directories_files
+       * @param {Array} directories_files.files
+       * @returns {undefined}
        */
-      function ( result ) {
-        return { message: 'added %n metadata jobs'.replace( '%n', config.metadata_job.creation_throttle ) };
+      function ( directories_files ) {
+        if ( !directories_files ) {
+          return;
+        }
+
+        if ( directories_files.files.length >= project_batch_job.pins.count ) {
+          project_batch_job.pins[ 'all-metadata-jobs-queued' ] = true;
+
+          return writeJsonFile(
+            path.join(
+              project_batch_job.directory.path,
+              project_batch_job.directory.name,
+              project_batch_job.filename
+            ),
+            project_batch_job
+          );
+        }
+      }
+    )
+    .then(
+      /**
+       * @returns {{ message: string }}
+       */
+      function () {
+        if ( pin_ids_added ) {
+          promise_result = { message: 'added %n metadata jobs'.replace( '%n', pin_ids_added ) };
+        }
+
+        return promise_result;
       }
     )
     .catch(

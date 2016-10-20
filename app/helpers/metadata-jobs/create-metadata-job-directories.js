@@ -5,6 +5,10 @@ var mkdirp = require( 'mkdir-p-bluebird' );
 var path = require( 'path' );
 var Promise = require( 'bluebird' );
 
+/**
+ * @param {batch_job} project_batch_job
+ * @returns {Promise.<Promise[]>}
+ */
 function createMetadataJobDirectories( project_batch_job ) {
   return Promise.all(
     config.metadata_job.state.available.reduce(
@@ -24,26 +28,7 @@ function createMetadataJobDirectories( project_batch_job ) {
       },
       []
     )
-  )
-    .then(
-      /**
-       * @param {Array} result
-       * @returns {Array}
-       */
-      function ( result ) {
-        return result;
-      }
-    )
-    .catch(
-      /**
-       * @param {Error} err
-       * @throws {Error}
-       * @returns {undefined}
-       */
-      function ( err ) {
-        throw err;
-      }
-    );
+  );
 }
 
 module.exports = createMetadataJobDirectories;

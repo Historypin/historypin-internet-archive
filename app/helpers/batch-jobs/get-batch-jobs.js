@@ -15,11 +15,14 @@ var path = require( 'path' );
  * @param {string} state
  *
  * @throws {Error}
- * @returns {Promise.<[{}]>}
+ * @returns {Promise.<batch_job[]>}
  */
 function getBatchJobs( state ) {
   var directory_state = path.join( config.batch_job.directory.path, state );
 
+  /**
+   * @returns {Promise.<{ directories: string[], files: string[] }>}
+   */
   return getDirectoriesFiles( directory_state )
     .catch(
       /**
@@ -29,6 +32,9 @@ function getBatchJobs( state ) {
        */
       function ( err ) {
         if ( err.code === 'ENOENT' ) {
+          /**
+           * @returns {Promise.<Promise[]>}
+           */
           return createBatchJobDirectories()
             .then(
               /**
@@ -45,8 +51,8 @@ function getBatchJobs( state ) {
     )
     .then(
       /**
-       * @param {{ directories:[], files:[] }} directories_files
-       * @returns {[{}]}
+       * @param {{ directories: string[], files: string[] }} directories_files
+       * @returns {batch_job[]}
        */
       function ( directories_files ) {
         return directories_files.directories.reduce(
@@ -66,15 +72,6 @@ function getBatchJobs( state ) {
           },
           []
         );
-      }
-    )
-    .then(
-      /**
-       * @param {[{}]} batch_jobs
-       * @returns {[{}]}
-       */
-      function ( batch_jobs ) {
-        return batch_jobs;
       }
     )
     .catch(

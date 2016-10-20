@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @class
+ * @namespace
  */
 var batch_job = {
   date: '',

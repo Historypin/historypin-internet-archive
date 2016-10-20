@@ -13,7 +13,7 @@ var Promise = require( 'bluebird' );
  * given a directory path, return an object containing an array of the directory and file names
  *
  * @param {string} directory absolute path
- * @returns {Promise.<{ directories:[], files:[] }|Error>}
+ * @returns {Promise.<{ directories: string[], files: string[] }|Error>}
  */
 function getDirectoriesFiles( directory ) {
   return new Promise(

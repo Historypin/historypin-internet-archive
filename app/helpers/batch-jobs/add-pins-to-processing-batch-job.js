@@ -15,74 +15,96 @@ var writeJsonFile = require( 'write-json-file' );
  *
  * does nothing if batch job’s pin ids length and project count are equal
  *
- * @returns {Promise.<string|project_batch_job>}
+ * @throws {Error}
+ * @returns {Promise.<string|batch_job>}
  */
 function addPinsToProcessingBatchJob() {
-  var project_batch_job;
+  var batch_job;
+  var promise_result;
 
+  /**
+   * @returns {Promise.<batch_job[]>}
+   */
   return getBatchJobs( 'processing' )
     .then(
       /**
-       * @param {[{}]} result
-       * @returns {{ message: string }|Promise.<{}>}
+       * @param {batch_job[]} batch_jobs
+       * @returns {undefined|Promise.<[{}]>}
        */
-      function ( result ) {
-        if ( result.length < 1 ) {
-          return { message: 'no processing batch job' };
+      function ( batch_jobs ) {
+        if ( batch_jobs.length < 1 ) {
+          promise_result = { message: 'no batch jobs to process' };
+          return;
         }
 
-        project_batch_job = result[ 0 ];
+        batch_job = batch_jobs[ 0 ];
 
-        if ( project_batch_job.pins[ 'all-pins-added' ] ) {
-          return { message: 'all pins have been added' };
+        if ( batch_job.pins[ 'all-pins-added' ] ) {
+          promise_result = { message: 'all pins have been added' };
+          return;
         }
-        
-        return getProjectPinIds( project_batch_job );
+
+        return getProjectPinIds( batch_job );
       }
     )
     .then(
       /**
-       * @param {Array} pin_ids
-       * @returns {string|Promise}
+       * if no pin_ids are passed in continue
+       *
+       * if pin_ids are passed in:
+       *  - concatenate with current batch_job.pin.ids
+       *  - make sure the pins arrayr contains unique values
+       *  - mark all-pins-added as true if that’s the case
+       *  - save the updated batch job
+       *
+       * @param {undefined|[{}]} pin_ids
+       * @returns {undefined|Promise}
        */
       function ( pin_ids ) {
-        if ( !Array.isArray( pin_ids ) || pin_ids.length === 0 ) {
-          return pin_ids;
+        if ( !pin_ids ) {
+          return;
         }
 
-        project_batch_job.pins.ids = uniq( project_batch_job.pins.ids.concat( pin_ids ) );
-
-        if ( project_batch_job.pins.ids.length === project_batch_job.pins.count ) {
-          project_batch_job.pins[ 'all-pins-added' ] = true;
+        if ( pin_ids.length === 0 ) {
+          promise_result = { message: 'no more pins to add' };
+          return;
         }
+
+        batch_job.pins.ids = uniq( batch_job.pins.ids.concat( pin_ids ) );
+
+        if ( batch_job.pins.ids.length === batch_job.pins.count ) {
+          batch_job.pins[ 'all-pins-added' ] = true;
+        }
+
+        promise_result = {
+          message: 'added %n pins to batch job %s'
+            .replace( '%n', pin_ids.length + '' )
+            .replace( '%s', batch_job.directory.name )
+        };
 
         return writeJsonFile(
           path.join(
-            project_batch_job.directory.path,
-            project_batch_job.directory.name,
-            project_batch_job.filename
+            batch_job.directory.path,
+            batch_job.directory.name,
+            batch_job.filename
           ),
-          project_batch_job
+          batch_job
         );
       }
     )
     .then(
       /**
-       * @param {Object|undefined} result
-       * @returns {{ message: string }|batch_job}
+       * @returns {{ message: string }}
        */
-      function ( result ) {
-        if ( !result ) {
-          return project_batch_job;
-        }
-
-        return result;
+      function () {
+        return promise_result;
       }
     )
     .catch(
       /**
        * @param {Error} err
        * @throws {Error}
+       * @returns {undefined}
        */
       function ( err ) {
         throw err;

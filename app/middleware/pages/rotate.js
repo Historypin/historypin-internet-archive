@@ -5,15 +5,20 @@
  */
 var rotateBatchJob = require( '../../helpers/batch-jobs/rotate-batch-job' );
 
+/**
+ * @param {IncomingMessage} req
+ * @param {ServerResponse} res
+ * @param {Function} next
+ */
 function rotateBatchJobPage( req, res, next ) {
   rotateBatchJob()
     .then(
       /**
-       * @param {string} directory absolute path to current processing batch job
+       * @param {string} result absolute path to current processing batch job
        * @returns {undefined}
        */
-      function ( directory ) {
-        res.send( directory );
+      function ( result ) {
+        res.send( result );
       }
     )
     .catch(

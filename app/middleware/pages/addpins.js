@@ -15,6 +15,9 @@ var addPinsToProcessingBatchJob = require( '../../helpers/batch-jobs/add-pins-to
  * @returns {undefined}
  */
 function addPinsToProcessingBatchJobPage( req, res, next ) {
+  /**
+   * @returns
+   */
   return addPinsToProcessingBatchJob()
     .then(
       /**

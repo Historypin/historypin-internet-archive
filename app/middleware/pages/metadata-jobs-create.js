@@ -14,7 +14,7 @@ var createMetadataJobs = require( '../../helpers/metadata-jobs/create-metadata-j
  * @param {Function} next
  * @returns {undefined}
  */
-function pinDetailsJob( req, res, next ) {
+function metadataJobsCreate( req, res, next ) {
   createMetadataJobs()
     .then(
       /**
@@ -35,4 +35,4 @@ function pinDetailsJob( req, res, next ) {
     );
 }
 
-module.exports = pinDetailsJob;
+module.exports = metadataJobsCreate;

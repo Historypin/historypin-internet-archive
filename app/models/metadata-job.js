@@ -1,7 +1,10 @@
 'use strict';
 
+/**
+ * @namespace
+ */
 var metadata_job = {
-  pin_id: 0,
+  pin: {},
   project: '',
   states: {
     available: [ 'completed', 'errored', 'paused', 'processing', 'queued' ],
