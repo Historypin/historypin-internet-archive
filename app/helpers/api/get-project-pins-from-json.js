@@ -3,7 +3,7 @@
 /**
  * @param {Object} json
  * @param {Array} json.items
- * @returns {Array}
+ * @returns {[{}]}
  */
 function getProjectPinsFromJSON( json ) {
   return json.items.reduce(
