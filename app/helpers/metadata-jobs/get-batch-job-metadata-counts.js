@@ -5,54 +5,54 @@ var getDirectoriesFiles = require( '../get-directories-files' );
 var path = require( 'path' );
 
 /**
+ * mutates the batch_job
+ * adds the nr of files is each metadata job state to batch_job.metadata[ state ]
  *
  * @param batch_job
  * @throws {Error}
- * @returns {Promise}
+ * @returns {Promise.<{batch_job}>}
  */
 function getBatchJobMetadataCounts( batch_job ) {
   var directory = path.join(
-    config.batch_job.directory.path, batch_job.state, batch_job.directory, 'metadata'
+    batch_job.directory.path, batch_job.directory.name, 'metadata'
   );
 
-  return getDirectoriesFiles( path.join( directory, 'completed' ) )
-    .then(
-      /**
-       * @param {Array} result
-       * @returns {Promise}
-       */
-      function ( result ) {
-        batch_job.metadata.completed = result.files.length;
-        return getDirectoriesFiles( path.join( directory, 'errored' ) );
-      }
+  batch_job.metadata = {};
+
+  return Promise.all(
+    config.metadata_job.state.available.reduce(
+      function ( acc, state ) {
+        var result = {};
+
+        result[ state ] = getDirectoriesFiles( path.join( directory, state ) );
+        acc.push( result );
+
+        return acc;
+      },
+      []
     )
+  )
     .then(
       /**
-       * @param {Array} result
-       * @returns {Promise}
+       * @param {Promise[]} results
+       * @returns {batch_job[]}
        */
-      function ( result ) {
-        batch_job.metadata.errored = result.files.length;
-        return getDirectoriesFiles( path.join( directory, 'processing' ) );
-      }
-    )
-    .then(
-      /**
-       * @param {Array} result
-       * @returns {Promise}
-       */
-      function ( result ) {
-        batch_job.metadata.processing = result.files.length;
-        return getDirectoriesFiles( path.join( directory, 'queued' ) );
-      }
-    )
-    .then(
-      /**
-       * @param {Array} result
-       * @returns {Promise}
-       */
-      function ( result ) {
-        batch_job.metadata.queued = result.files.length;
+      function ( results ) {
+        results.reduce(
+          function ( acc, result ) {
+            Object.keys( result ).reduce(
+              function ( acc, state ) {
+                batch_job.metadata[ state ] = result[ state ].value().files.length;
+                return acc;
+              },
+              ''
+            );
+
+            return acc;
+          },
+          ''
+        );
+
         return batch_job;
       }
     )

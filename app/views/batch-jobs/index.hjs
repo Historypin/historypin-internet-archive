@@ -5,41 +5,20 @@
 <table class="table table-striped">
   <thead>
   <tr>
-    <th>date</th>
-    <th>project</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th colspan="5">metadata</th>
+  </tr>
+  <tr>
+    <th class="left">date</th>
+    <th class="left">project</th>
+    <th>state</th>
     <th>count</th>
-    <th>
-      <table class="table">
-        <tbody>
-        <tr>
-          <td colspan="5">metadata</td>
-        </tr>
-        <tr>
-          <td>com</td>
-          <td>err</td>
-          <td>pau</td>
-          <td>pro</td>
-          <td>que</td>
-        </tr>
-        </tbody>
-      </table>
-    </th>
-    <th>
-      <table class="table">
-        <tbody>
-        <tr>
-          <td colspan="5">media</td>
-        </tr>
-        <tr>
-          <td>com</td>
-          <td>err</td>
-          <td>pau</td>
-          <td>pro</td>
-          <td>que</td>
-        </tr>
-        </tbody>
-      </table>
-    </th>
+    <th>complete</th>
+    <th>error</th>
+    <th>processing</th>
+    <th>queue</th>
   </tr>
   </thead>
   <tbody id="batch-job-rows">
@@ -47,33 +26,12 @@
     <tr>
       <td>{{ date }}</td>
       <td>{{ project }}</td>
-      <td>{{ count }}</td>
-      <td>
-        <table>
-          <tbody>
-          <tr>
-            <td>{{ metadata.completed }}</td>
-            <td>{{ metadata.errored }}</td>
-            <td>{{ metadata.paused }}</td>
-            <td>{{ metadata.processing }}</td>
-            <td>{{ metadata.queued }}</td>
-          </tr>
-          </tbody>
-        </table>
-      </td>
-      <td>
-        <table>
-          <tbody>
-          <tr>
-            <td>{{ media.completed }}</td>
-            <td>{{ media.errored }}</td>
-            <td>{{ media.paused }}</td>
-            <td>{{ media.processing }}</td>
-            <td>{{ media.queued }}</td>
-          </tr>
-          </tbody>
-        </table>
-      </td>
+      <td class="center">{{ state.current }}</td>
+      <td class="center">{{ pins.count }}</td>
+      <td class="center">{{ metadata.completed }}</td>
+      <td class="center">{{ metadata.errored }}</td>
+      <td class="center">{{ metadata.processing }}</td>
+      <td class="center">{{ metadata.queued }}</td>
     </tr>
   {{/ batch_jobs }}
   </tbody>

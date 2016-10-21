@@ -7,7 +7,7 @@ var getDefaultContext = require( '../../contexts/default' );
 var getGenericPageContext = require( '../../contexts/pages/generic' );
 var getPageContext = require( '../../contexts/pages/batch-jobs' );
 var getBatchJobs = require( '../../helpers/batch-jobs/get-batch-jobs' );
-// var getBatchJobsMetadataCounts = require( '../../helpers/metadata-jobs/get-batch-jobs-metadata-counts' );
+var getBatchJobsMetadataCounts = require( '../../helpers/metadata-jobs/get-batch-jobs-metadata-counts' );
 
 /**
  * @param {IncomingMessage} req
@@ -30,26 +30,16 @@ function pageBatchJobs( req, res, next ) {
   getBatchJobs( 'processing' )
     .then(
       /**
-       * @param {[{}]} batch_jobs
-       * @returns {[{}]}
+       * @param {batch_job[]} batch_jobs
+       * @returns {batch_job[]}
        */
       function ( batch_jobs ) {
-        return batch_jobs;
-        // return getBatchJobsMetadataCounts( batch_jobs );
+        return getBatchJobsMetadataCounts( batch_jobs );
       }
     )
     .then(
       /**
-       * @param {[{}]} batch_jobs
-       * @returns {[{}]}
-       */
-      function ( batch_jobs ) {
-        return batch_jobs;
-      }
-    )
-    .then(
-      /**
-       * @param {[{}]} batch_jobs
+       * @param {batch_job[]} batch_jobs
        * @returns {undefined}
        */
       function ( batch_jobs ) {
