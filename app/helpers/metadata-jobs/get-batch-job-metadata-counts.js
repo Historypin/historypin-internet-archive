@@ -3,6 +3,7 @@
 var config = require( '../../config' );
 var getDirectoriesFiles = require( '../get-directories-files' );
 var path = require( 'path' );
+var Promise = require( 'bluebird' );
 
 /**
  * mutates the batch_job
@@ -41,9 +42,9 @@ function getBatchJobMetadataCounts( batch_job ) {
         results.reduce(
           function ( acc, result ) {
             Object.keys( result ).reduce(
-              function ( acc, state ) {
+              function ( acc2, state ) {
                 batch_job.metadata[ state ] = result[ state ].value().files.length;
-                return acc;
+                return acc2;
               },
               ''
             );
