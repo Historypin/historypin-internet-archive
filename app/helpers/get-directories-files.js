@@ -16,6 +16,11 @@ var Promise = require( 'bluebird' );
  * @returns {Promise.<{ directories: string[], files: string[] }|Error>}
  */
 function getDirectoriesFiles( directory ) {
+  var result = {
+    directories: [],
+    files: []
+  };
+
   return new Promise(
     /**
      * @param {Function} resolve
@@ -27,9 +32,9 @@ function getDirectoriesFiles( directory ) {
           fs.readdirSync( directory )
             .reduce(
               /**
-               * @param {{ directories:[], filed:[] }} acc
+               * @param {{ directories:[], files:[] }} acc
                * @param {string} file
-               * @returns {{ directories:[], filed:[] }}
+               * @returns {{ directories:[], files:[] }}
                */
               function ( acc, file ) {
                 var stat = fs.statSync( path.join( directory, file ) );
@@ -42,13 +47,15 @@ function getDirectoriesFiles( directory ) {
 
                 return acc;
               },
-              {
-                directories: [],
-                files: []
-              }
+              result
             )
         );
       } catch ( err ) {
+        if ( err.code === 'ENOENT' ) {
+          resolve( result );
+          return;
+        }
+
         reject( err );
       }
     }
