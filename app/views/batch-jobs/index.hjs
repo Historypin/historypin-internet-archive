@@ -8,17 +8,18 @@
     <th></th>
     <th></th>
     <th></th>
-    <th colspan="5">metadata</th>
+    <th></th>
+    <th colspan="4">metadata</th>
   </tr>
   <tr>
     <th class="left">date</th>
     <th class="left">project</th>
     <th>state</th>
     <th>count</th>
-    <th>complete</th>
-    <th>error</th>
+    <th>completed</th>
+    <th>errored</th>
     <th>processing</th>
-    <th>queue</th>
+    <th>queued</th>
   </tr>
   </thead>
   <tbody id="batch-job-rows">
