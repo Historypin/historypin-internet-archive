@@ -3,11 +3,13 @@
 /**
  * module dependencies
  */
+var config = require( '../../config' );
 var getDefaultContext = require( '../../contexts/default' );
 var getGenericPageContext = require( '../../contexts/pages/generic' );
 var getPageContext = require( '../../contexts/pages/batch-jobs' );
 var getBatchJobs = require( '../../helpers/batch-jobs/get-batch-jobs' );
 var getBatchJobsMetadataCounts = require( '../../helpers/metadata-jobs/get-batch-jobs-metadata-counts' );
+var Promise = require( 'bluebird' );
 
 /**
  * @param {IncomingMessage} req
@@ -25,11 +27,38 @@ function pageBatchJobs( req, res, next ) {
   context = getPageContext( context );
 
   /**
-   * get batch jobs in the processing directory
+   * get batch jobs in all batch job directories
    */
-  getBatchJobs( 'processing' )
+  return Promise.all(
+    config.batch_job.state.available.reduce(
+      function ( acc, state ) {
+        acc.push( getBatchJobs( state ) );
+
+        return acc;
+      },
+      []
+    )
+  )
     .then(
       /**
+       * flatten the multi-dimensional arrays
+       *
+       * @param {[batch_job[]]} batch_jobs
+       * @returns {batch_job[]}
+       */
+      function ( batch_jobs ) {
+        return batch_jobs.reduce(
+          function ( acc, batch_job ) {
+            return acc.concat( batch_job );
+          },
+          []
+        );
+      }
+    )
+    .then(
+      /**
+       * add metadata job counts
+       *
        * @param {batch_job[]} batch_jobs
        * @returns {batch_job[]}
        */
