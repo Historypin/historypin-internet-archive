@@ -20,7 +20,7 @@ var writeJsonFile = require( 'write-json-file' );
  */
 function addPinsToProcessingBatchJob() {
   var batch_job;
-  var promise_result;
+  var promise_result = { message: '' };
 
   /**
    * @returns {Promise.<batch_job[]>}
@@ -33,14 +33,14 @@ function addPinsToProcessingBatchJob() {
        */
       function ( batch_jobs ) {
         if ( batch_jobs.length < 1 ) {
-          promise_result = { message: 'no batch jobs to process' };
+          promise_result.message = 'no batch jobs to process';
           return;
         }
 
         batch_job = batch_jobs[ 0 ];
 
         if ( batch_job.pins[ 'all-pins-added' ] ) {
-          promise_result = { message: 'all pins have been added' };
+          promise_result.message = 'all pins have been added';
           return;
         }
 
@@ -66,7 +66,7 @@ function addPinsToProcessingBatchJob() {
         }
 
         if ( pin_ids.length === 0 ) {
-          promise_result = { message: 'no more pins to add' };
+          promise_result.message = 'no more pins to add';
           return;
         }
 
@@ -76,11 +76,10 @@ function addPinsToProcessingBatchJob() {
           batch_job.pins[ 'all-pins-added' ] = true;
         }
 
-        promise_result = {
-          message: 'added %n pins to batch job %s'
-            .replace( '%n', pin_ids.length + '' )
-            .replace( '%s', batch_job.directory.name )
-        };
+        promise_result.message =
+          'added %n pins to batch job %s'
+            .replace( '%n', String( pin_ids.length ) )
+            .replace( '%s', batch_job.directory.name );
 
         return writeJsonFile(
           path.join(
