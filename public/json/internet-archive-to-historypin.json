@@ -3,7 +3,7 @@
     "formats-expected": [
       "text"
     ],
-    "value": "historypin"
+    "value": "test_collection"
   },
   "contributor": {
     "source-properties": [
@@ -121,7 +121,7 @@
       "id"
     ],
     "value-templates": [
-      "https://www.historypin.org/en/explore/pin/%id%"
+      "test-hp-pin-%id%"
     ]
   },
   "language": {
