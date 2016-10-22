@@ -14,7 +14,7 @@ var iaApiRead = require( 'internet-archive-metadata-api' ).read;
  *
  * @param {Function} next
  */
-function iaApiPage( req, res, next ) {
+function iaApiReadPage( req, res, next ) {
   iaApiRead(
     {
       count: parseInt( req.query.count, 10 ),
@@ -44,4 +44,4 @@ function iaApiPage( req, res, next ) {
     );
 }
 
-module.exports = iaApiPage;
+module.exports = iaApiReadPage;
