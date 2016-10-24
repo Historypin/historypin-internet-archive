@@ -20,7 +20,8 @@ var batch_job = {
   project: '',
   state: {
     available: [],
-    current: ''
+    current: '',
+    'play-pause-action': 'pause'
   },
   timestamp: 0
 };

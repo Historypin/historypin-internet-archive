@@ -5,8 +5,7 @@
  */
 var callApi = require( '../middleware/api/call-api' );
 var createBatchJob = require( '../middleware/batch-jobs/create-batch-job' );
-var pauseBatchJob = require( '../middleware/batch-jobs/pause-batch-job' );
-var playBatchJob = require( '../middleware/batch-jobs/play-batch-job' );
+var playPauseBatchJob = require( '../middleware/batch-jobs/play-pause-batch-job' );
 
 /**
  * @param {Function} router
@@ -18,8 +17,7 @@ function addAjaxRouting( router ) {
   router.get( '/ajax/get-mapping', callApi );
   router.get( '/ajax/get-pin', callApi );
   router.post( '/ajax/create-batch-job', createBatchJob );
-  router.post( '/ajax/pause-batch-job', pauseBatchJob );
-  router.post( '/ajax/play-batch-job', playBatchJob );
+  router.post( '/ajax/play-pause-batch-job', playPauseBatchJob );
 }
 
 module.exports = addAjaxRouting;

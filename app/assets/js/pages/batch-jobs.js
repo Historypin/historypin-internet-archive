@@ -5,50 +5,42 @@
  */
 var lib = require( 'node-front-end-lib' );
 
-function playBatchJob( button ) {
-  var response;
+function updateButtonUi( button, action, response ) {
+  var tr = lib.findAncestorWithTagName( button, 'tr' );
 
-  var data = 'project=%project&_csrf=%csrf'
-    .replace( '%project', encodeURIComponent( button.getAttribute( 'data-project' ) ) )
-    .replace( '%csrf', encodeURIComponent( document.getElementsByName( '_csrf' )[ 0 ].value ) );
+  if ( action === 'pause' ) {
+    lib.removeClass( button, 'icon-pause' );
+    lib.addClass( button, 'icon-play' );
+  } else if ( action === 'play' ) {
+    lib.removeClass( button, 'icon-play' );
+    lib.addClass( button, 'icon-pause' );
+  }
 
-  lib.ajax.post( '/ajax/play-batch-job', { data: data } )
-    .then(
-      function ( xhr ) {
-        response = lib.extractXhrResponse( xhr );
-        response = JSON.parse( response );
+  lib.removeClass( button, 'clicked' );
 
-        if ( response.status === 'success' ) {
-          lib.removeClass( button, 'icon-play' );
-          lib.addClass( button, 'icon-pause' );
-          lib.removeClass( button, 'clicked' );
-        }
-      }
-    )
-    .catch(
-      function ( err ) {
-        console.log( err );
-      }
-    );
+  button.setAttribute( 'data-state', response.state );
+  button.setAttribute( 'data-action', response.action );
+  tr.getElementsByClassName( 'state' )[ 0 ].innerHTML = response.state;
 }
 
-function pauseBatchJob( button ) {
+function playPauseBatchJob( button ) {
+  var action = button.getAttribute( 'data-action' );
   var response;
 
-  var data = 'project=%project&_csrf=%csrf'
+  var data = 'action=%action&project=%project&state=%state&_csrf=%csrf'
+    .replace( '%csrf', encodeURIComponent( document.getElementsByName( '_csrf' )[ 0 ].value ) )
+    .replace( '%action', encodeURIComponent( action ) )
     .replace( '%project', encodeURIComponent( button.getAttribute( 'data-project' ) ) )
-    .replace( '%csrf', encodeURIComponent( document.getElementsByName( '_csrf' )[ 0 ].value ) );
+    .replace( '%state', encodeURIComponent( button.getAttribute( 'data-state' ) ) );
 
-  lib.ajax.post( '/ajax/pause-batch-job', { data: data } )
+  lib.ajax.post( '/ajax/play-pause-batch-job', { data: data } )
     .then(
       function ( xhr ) {
         response = lib.extractXhrResponse( xhr );
         response = JSON.parse( response );
 
         if ( response.status === 'success' ) {
-          lib.removeClass( button, 'icon-pause' );
-          lib.addClass( button, 'icon-play' );
-          lib.removeClass( button, 'clicked' );
+          updateButtonUi( button, action, response );
         }
       }
     )
@@ -65,16 +57,11 @@ function handlePlayPauseClick( evt, app_data ) {
   }
 
   lib.toggleClass( this, 'clicked' );
-
-  if ( lib.hasClass( this, 'icon-pause' ) ) {
-    pauseBatchJob( this, app_data );
-  } else if ( lib.hasClass( this, 'icon-play' )) {
-    playBatchJob( this, app_data );
-  }
+  playPauseBatchJob( this, app_data );
 }
 
 function attachPlayPauseHandler( button, app_data ) {
-  button.addEventListener( 'click', function( evt ) {
+  button.addEventListener( 'click', function ( evt ) {
     handlePlayPauseClick.call( this, evt, app_data );
   } );
 }

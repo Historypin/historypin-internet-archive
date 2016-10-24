@@ -28,10 +28,10 @@
   <tbody id="batch-job-rows">
   {{# batch_jobs }}
     <tr>
-      <td><div class="play-pause icon-pause" title="pause" data-project="{{ directory.name }}"></div></td>
+      <td><div class="play-pause icon-{{ state.play_pause_action }}" title="{{ state.play_pause_action }}" data-project="{{ directory.name }}" data-state="{{ state.current }}" data-action="{{ state.play_pause_action }}"></div></td>
       <td>{{ date }}</td>
       <td>{{ project }}</td>
-      <td class="center">{{ state.current }}</td>
+      <td class="center state">{{ state.current }}</td>
       <td class="center">{{ pins.count }}</td>
       <td class="center">{{ metadata.completed }}</td>
       <td class="center">{{ metadata.errored }}</td>
