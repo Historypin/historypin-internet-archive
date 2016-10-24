@@ -10,8 +10,7 @@ var pageAiWriteApi = require( '../middleware/pages/ia-api-write' );
  * @param {Function} router.get
  */
 function iaApiWriteRouting( router ) {
-  router.get( '/ia-api-write', function ( req, res, next ) {
-    req.type = 'all';
+  router.get( '/ia-api-write/:identifier', function ( req, res, next ) {
     next();
   }, pageAiWriteApi );
 }
