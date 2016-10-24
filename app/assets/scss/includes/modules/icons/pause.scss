@@ -1,0 +1,13 @@
+.icon-pause {
+  background-image: url( $icon-pause );
+  background-repeat: no-repeat;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 300ms;
+}
+
+.icon-pause.clicked {
+  opacity: 0.3;
+}
