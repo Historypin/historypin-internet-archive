@@ -29,7 +29,7 @@ var writeJsonFile = require( 'write-json-file' );
  * @throws {Error}
  * @returns {Promise.<Object>}
  */
-function rotateBatchJob() {
+function rotateQueuedBatchJob() {
   var current_directory;
   var destination_directory;
   var promise_result;
@@ -192,4 +192,4 @@ function rotateBatchJob() {
     );
 }
 
-module.exports = rotateBatchJob;
+module.exports = rotateQueuedBatchJob;

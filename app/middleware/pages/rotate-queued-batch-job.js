@@ -3,7 +3,7 @@
 /**
  * module dependenceis
  */
-var rotateBatchJob = require( '../../helpers/batch-jobs/rotate-batch-job' );
+var rotateBatchJob = require( '../../helpers/batch-jobs/rotate-queued-batch-job' );
 
 /**
  * @param {IncomingMessage} req
