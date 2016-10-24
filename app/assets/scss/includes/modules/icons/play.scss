@@ -4,4 +4,10 @@
   width: 24px;
   height: 24px;
   cursor: pointer;
+  transition: opacity 500ms;
+}
+
+.icon-play.clicked {
+  cursor: default;
+  opacity: 0;
 }
