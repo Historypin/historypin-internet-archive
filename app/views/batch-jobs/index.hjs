@@ -2,6 +2,7 @@
 <h1>historypin internet archive</h1>
 <p>an application that allows one to upload historypin collections to the internet archive</p>
 <h2>batch-jobs</h2>
+<input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 <table class="table table-striped">
   <thead>
   <tr>
@@ -9,9 +10,11 @@
     <th></th>
     <th></th>
     <th></th>
+    <th></th>
     <th colspan="4">metadata</th>
   </tr>
   <tr>
+    <th></th>
     <th class="left">date</th>
     <th class="left">project</th>
     <th>state</th>
@@ -25,6 +28,7 @@
   <tbody id="batch-job-rows">
   {{# batch_jobs }}
     <tr>
+      <td><div class="play-pause icon-pause" title="pause" data-project="{{ directory.name }}"></div></td>
       <td>{{ date }}</td>
       <td>{{ project }}</td>
       <td class="center">{{ state.current }}</td>
