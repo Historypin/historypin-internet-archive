@@ -8,13 +8,13 @@
  * @returns {undefined}
  */
 function onListening() {
-  if ( this.key && this.cert ) {
-    console.log( 'listening on https:', this.address() );
+  var protocol = 'http';
 
-    return;
+  if ( this.key && this.cert ) {
+    protocol = 'https';
   }
 
-  console.log( 'listening on http:', this.address() );
+  console.log( new Date().toUTCString(), 'listening on ' + protocol, this.address() );
 }
 
 module.exports = onListening;
