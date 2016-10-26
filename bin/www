@@ -1,27 +1,24 @@
 #!/usr/bin/env node
 
 /**
- * module variables
- * @private
+ * module dependencies
  */
-var app;
-var config;
-var fs;
-var https;
+var app = require( '../app' );
+var config = require( '../app/config' );
+var fs = require( 'fs' );
+var http = require( 'http' );
+var https = require( 'https' );
+var normalizePort = require( '../app/helpers/normalize-port' );
+var onError = require( '../app/handlers/on-error' );
+var onListening = require( '../app/handlers/on-listening' );
+
+/**
+ * module variables
+ */
 var ip_address;
-var path;
 var port;
 var server;
 var ssloptions;
-
-/**
- * variable assignments
- */
-path = require( 'path' );
-app = require( path.join( __dirname, '..', 'app' ) );
-config = require( path.join( __dirname, '..', 'app', 'config' ) );
-fs = require( 'fs' );
-https = require( 'https' );
 
 /**
  * get port from environment and store in express
@@ -37,15 +34,21 @@ ip_address = config.ip_address.toString();
 /**
  * ssl options
  */
-ssloptions = {
-  cert: fs.readFileSync( config.ssl.crt ),
-  key: fs.readFileSync( config.ssl.key )
-};
+if ( config.ssl ) {
+  ssloptions = {
+    cert: fs.readFileSync( config.ssl.crt ),
+    key: fs.readFileSync( config.ssl.key )
+  };
+}
 
 /**
  * create HTTP server
  */
-server = https.createServer( ssloptions, app );
+if ( ssloptions ) {
+  server = https.createServer( ssloptions, app );
+} else {
+  server = http.createServer( app );
+}
 
 /**
  * listen on provided port, on all network interfaces
@@ -53,58 +56,3 @@ server = https.createServer( ssloptions, app );
 server.listen( port, ip_address );
 server.on( 'error', onError );
 server.on( 'listening', onListening );
-
-/**
- * normalize a port into a number, string, or false
- */
-function normalizePort( val ) {
-  var port = parseInt( val, 10 );
-
-  if ( isNaN( port ) ) {
-    // named pipe
-    return val;
-  }
-
-  if ( port >= 0 ) {
-    // port number
-    return port;
-  }
-
-  return false;
-}
-
-/**
- * event listener for HTTP server "error" event
- */
-function onError( error ) {
-  var bind;
-
-  if ( error.syscall !== 'listen' ) {
-    throw error;
-  }
-
-  bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch ( error.code ) {
-    case 'EACCES':
-      console.error( bind + ' requires elevated privileges' );
-      process.exit( 1 );
-      break;
-    case 'EADDRINUSE':
-      console.error( bind + ' is already in use' );
-      process.exit( 1 );
-      break;
-    default:
-      throw error;
-  }
-}
-
-/**
- * event listener for HTTP server "listening" event
- */
-function onListening() {
-  console.log( 'listening on https:', server.address() );
-}

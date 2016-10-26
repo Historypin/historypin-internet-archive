@@ -3,44 +3,97 @@
 /**
  * module dependencies
  */
-var errorLogger = require( 'node-error-logger' );
+var errorLogger = require( '../helpers/error-logger' );
 
 /**
  * @param {Function} app
  * @param {Function} app.get
  * @param {Function} app.use
+ *
+ * @returns {undefined}
  */
-module.exports = function ( app ) {
-  // catch 404 and forward to error handler
-  app.use( function ( req, res, next ) {
-    var err = new Error( 'Not Found' );
-    err.status = 404;
-    next( err );
-  } );
+function middleware( app ) {
 
-  // development error handler
-  // will print stacktrace
+  /**
+   * catch 404 and forward to error handler
+   */
+  app.use(
+
+    /**
+     * @param {IncomingMessage} req
+     * @param {ServerResponse} res
+     * @param {Function} next
+     *
+     * @returns {undefined}
+     */
+    function ( req, res, next ) {
+      var err = new Error( 'Not Found' );
+
+      err.status = 404;
+      next( err );
+    }
+  );
+
+  /**
+   * development error handler
+   * will print stacktrace
+   */
   if ( app.get( 'env' ) === 'development' ) {
-    app.use( function ( err, req, res ) {
+    app.use(
+
+      /**
+       * @param {Error} err
+       * @param {IncomingMessage} req
+       *
+       * @param {ServerResponse} res
+       * @param {Function} res.status
+       * @param {Function} res.render
+       *
+       * @returns {undefined}
+       */
+      function ( err, req, res ) {
+        errorLogger( err, req );
+        res.status( err.status || 500 );
+
+        res.render(
+          'error', {
+            error: err,
+            message: err.message
+          }
+        );
+      }
+    );
+  }
+
+  /**
+   * production error handler
+   * no stacktrace leaked to user
+   */
+  app.use(
+
+    /**
+     * @param {Error} err
+     * @param {IncomingMessage} req
+     *
+     * @param {ServerResponse} res
+     * @param {Function} res.status
+     * @param {Function} res.render
+     *
+     * @returns {undefined}
+     */
+    function ( err, req, res ) {
       errorLogger( err, req );
       res.status( err.status || 500 );
 
-      res.render( 'error', {
-        message: err.message,
-        error: err
-      } );
-    } );
-  }
+      res.render(
+        'error',
+        {
+          error: {},
+          message: err.message
+        }
+      );
+    }
+  );
+}
 
-  // production error handler
-  // no stacktraces leaked to user
-  app.use( function ( err, req, res ) {
-    errorLogger( err, req );
-    res.status( err.status || 500 );
-
-    res.render( 'error', {
-      message: err.message,
-      error: {}
-    } );
-  } );
-};
+module.exports = middleware;

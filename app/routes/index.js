@@ -1,25 +1,39 @@
+/* eslint global-require: off, new-cap: off */
+
 'use strict';
 
 /**
- * variable assignments
+ * module dependencies
  */
-var express = require( 'express' );
-var router = express.Router();
-var ajaxRouting = require( './ajax' );
-var iaReadApiRouting = require( './ia-api-read' );
-var iaWriteApiRouting = require( './ia-api-write' );
-var batchJobsRouting = require( './batch-jobs' );
-var homeRouting = require( './home' );
-var metadataJobsRouting = require( './metadata-jobs' );
-var path = require( 'path' );
+var getFiles = require( '../helpers/get-files' );
 
-module.exports = function routes( app ) {
-  app.use( express.static( path.join( __dirname, '..', '..', 'public' ) ) );
-  ajaxRouting( router );
-  iaReadApiRouting( router );
-  iaWriteApiRouting( router );
-  batchJobsRouting( router );
-  homeRouting( router );
-  metadataJobsRouting( router );
+/**
+ * @param {Function} app
+ * @param {Function} app.use
+ *
+ * @param {Function} express
+ * @param {Function} express.Router
+ * @param {Function} express.static
+ *
+ * @returns {undefined}
+ */
+function routes( app, express ) {
+  var router = express.Router();
+
+  app.use( express.static( 'public' ) );
+
+  getFiles( __dirname ).reduce(
+    function ( acc, file ) {
+      if ( file !== 'index.js' ) {
+        require( './' + file )( router );
+      }
+
+      return acc;
+    },
+    ''
+  );
+
   app.use( router );
-};
+}
+
+module.exports = routes;

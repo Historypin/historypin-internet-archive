@@ -1,21 +1,19 @@
 'use strict';
 
 /**
- * module variables
- * @private
- */
-var bodyParser;
-
-/**
  * module dependencies
  */
-bodyParser = require( 'body-parser' );
+var bodyParser = require( 'body-parser' );
 
 /**
- * @public
  * @param {Function} app
+ * @param {Function} app.use
+ *
+ * @returns {undefined}
  */
-module.exports = function ( app ) {
+function middleware( app ) {
   app.use( bodyParser.json() );
   app.use( bodyParser.urlencoded( { extended: false } ) );
-};
+}
+
+module.exports = middleware;

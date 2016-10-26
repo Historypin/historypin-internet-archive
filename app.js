@@ -1,39 +1,22 @@
 'use strict';
 
 /**
- * module variables
- * @private
+ * module dependencies
  */
-var errorHandlers;
-var express;
-var middleware;
-var path;
-var routes;
-
-/**
- * module variables
- * @public
- */
-var app;
-
-/**
- * variable assignments
- */
-path = require( 'path' );
-errorHandlers = require( path.join( __dirname, 'app', 'middleware', 'error-handlers' ) );
-express = require( 'express' );
-middleware = require( path.join( __dirname, 'app', 'middleware' ) );
-routes = require( path.join( __dirname, 'app', 'routes' ) );
+var errorHandlers = require( './app/middleware/error-handlers' );
+var express = require( 'express' );
+var middleware = require( './app/middleware/default' );
+var routes = require( './app/routes' );
 
 /**
  * create the app
  */
-app = express();
+var app = express();
 
 /**
  * view engine
  */
-app.set( 'views', path.join( __dirname, 'app', 'views' ) );
+app.set( 'views', './app/views' );
 app.set( 'view engine', 'hjs' );
 
 /**
@@ -44,7 +27,7 @@ middleware( app );
 /**
  * routes
  */
-routes( app );
+routes( app, express );
 
 /**
  * error handlers

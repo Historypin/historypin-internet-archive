@@ -1,14 +1,9 @@
 'use strict';
 
 /**
- * module variables
- */
-var acceptedLanguages;
-
-/**
  * module dependencies
  */
-acceptedLanguages = require( 'node-accepted-languages' );
+var acceptedLanguages = require( 'node-accepted-languages' );
 
 /**
  * @param {Function} app
