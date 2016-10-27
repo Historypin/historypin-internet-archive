@@ -22,7 +22,11 @@ function createMetadataJobs() {
   var directory_metadata_queued;
   var pin_ids_added;
   var project_batch_job;
-  var promise_result;
+
+  var promise_result = {
+    batch_job: null,
+    message: null
+  };
 
   /**
    * get the current project batch job in the processing directory
@@ -40,14 +44,15 @@ function createMetadataJobs() {
        */
       function ( batch_job ) {
         if ( !Array.isArray( batch_job ) || batch_job.length < 1 ) {
-          promise_result = { message: 'no batch jobs to process' };
+          promise_result.message = 'no batch jobs to process';
           return;
         }
 
         project_batch_job = batch_job[ 0 ];
+        promise_result.batch_job = project_batch_job.directory.name;
 
         if ( project_batch_job.pins[ 'all-metadata-jobs-queued' ] ) {
-          promise_result = { message: 'all metadata jobs have been queued' };
+          promise_result.message = 'all metadata jobs have been queued';
           return;
         }
 
@@ -140,7 +145,7 @@ function createMetadataJobs() {
         }
 
         if ( pin_ids.length < 1 ) {
-          promise_result = { message: 'no pin ids to process' };
+          promise_result.message = 'no pin ids to process';
           return;
         }
 
@@ -233,11 +238,11 @@ function createMetadataJobs() {
     )
     .then(
       /**
-       * @returns {{ message: string }}
+       * @returns {{ batch_job: string|null, message: string|null }}
        */
       function () {
         if ( pin_ids_added ) {
-          promise_result = { message: 'added %n metadata jobs'.replace( '%n', pin_ids_added ) };
+          promise_result.message = 'added %n metadata jobs'.replace( '%n', pin_ids_added );
         }
 
         return promise_result;

@@ -32,8 +32,13 @@ var writeJsonFile = require( 'write-json-file' );
 function rotateQueuedBatchJob() {
   var current_directory;
   var destination_directory;
-  var promise_result;
   var directory_batch_job_processing = path.join( config.batch_job.directory.path, 'processing' );
+  var project_batch_job;
+
+  var promise_result = {
+    batch_job: null,
+    message: null
+  };
 
   /**
    * get a list of directories in processing state
@@ -76,7 +81,7 @@ function rotateQueuedBatchJob() {
        * directories in the queued state
        *
        * @param {{ directories: string[], files: string[] }} directories_files
-       * @returns {undefined|Promise.<{ directories: string[], files: string[] }>}
+       * @returns {Promise.<{ directories: string[], files: string[] }>|undefined}
        */
       function ( directories_files ) {
         if ( directories_files.directories.length > 0 ) {
@@ -93,12 +98,12 @@ function rotateQueuedBatchJob() {
        * if batch job directories exist, set the current and destination directories for the
        * first batch job
        *
-       * @param {undefined|{ directories: string[], files: string[] }} directories_files
+       * @param {{ directories: string[], files: string[] }|undefined} directories_files
        * @returns {undefined}
        */
       function ( directories_files ) {
         if ( !directories_files || directories_files.directories.length < 1 ) {
-          promise_result = { message: 'no batch jobs to rotate' };
+          promise_result.message = 'no batch jobs to rotate';
           return;
         }
 
@@ -117,7 +122,7 @@ function rotateQueuedBatchJob() {
        *
        * otherwise, retrieve the current batch job based on the current_directory just set
        *
-       * @returns {undefined|batch_job}
+       * @returns {batch_job|undefined}
        */
       function () {
         if ( !current_directory ) {
@@ -135,14 +140,16 @@ function rotateQueuedBatchJob() {
        *
        * if there’s a batch job to rotate, update its directory.path and state.current
        *
-       * @param {undefined|batch_job} batch_job
-       * @returns {undefined|Promise.<undefined>}
+       * @param {batch_job|undefined} batch_job
+       * @returns {Promise.<undefined>|undefined}
        */
       function ( batch_job ) {
         if ( !batch_job ) {
           return;
         }
 
+        project_batch_job = batch_job;
+        promise_result.batch_job = project_batch_job.directory.name;
         batch_job.directory.path = path.join( config.batch_job.directory.path, 'processing' );
         batch_job.state.current = 'processing';
 
@@ -171,11 +178,11 @@ function rotateQueuedBatchJob() {
     .then(
       /**
        * @param {undefined|string} result
-       * @returns {Object}
+       * @returns {{ batch_job: string|null, message: string|null }}
        */
       function ( result ) {
         if ( result ) {
-          promise_result = { message: result };
+          promise_result.message = 'batch job moved from queued to processing';
         }
 
         return promise_result;

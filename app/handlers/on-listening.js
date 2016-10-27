@@ -3,6 +3,11 @@
 'use strict';
 
 /**
+ * module dependencies
+ */
+var cron = require( '../../cron' );
+
+/**
  * event listener for HTTP server "listening" event
  *
  * @returns {undefined}
@@ -15,6 +20,7 @@ function onListening() {
   }
 
   console.log( new Date().toUTCString(), 'listening on ' + protocol, this.address() );
+  cron();
 }
 
 module.exports = onListening;

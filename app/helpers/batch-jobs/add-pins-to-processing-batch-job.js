@@ -20,7 +20,11 @@ var writeJsonFile = require( 'write-json-file' );
  */
 function addPinsToProcessingBatchJob() {
   var batch_job;
-  var promise_result = { message: '' };
+
+  var promise_result = {
+    batch_job: null,
+    message: null
+  };
 
   /**
    * @returns {Promise.<batch_job[]>}
@@ -38,6 +42,7 @@ function addPinsToProcessingBatchJob() {
         }
 
         batch_job = batch_jobs[ 0 ];
+        promise_result.batch_job = batch_job.directory.name;
 
         if ( batch_job.pins[ 'all-pins-added' ] ) {
           promise_result.message = 'all pins have been added';
@@ -93,7 +98,7 @@ function addPinsToProcessingBatchJob() {
     )
     .then(
       /**
-       * @returns {{ message: string }}
+       * @returns {{ batch_job: string|null, message: string|null }}
        */
       function () {
         return promise_result;
