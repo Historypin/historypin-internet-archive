@@ -4,6 +4,7 @@
  * module dependencies
  */
 var config = require( '../../config/index' );
+var createBatchJobDirectories = require( './create-batch-job-directories' );
 var mkdirp = require( 'mkdir-p-bluebird' );
 var writeFile = require( 'write-file-bluebird' );
 var path = require( 'path' );
@@ -40,19 +41,36 @@ function setupBatchJob( req ) {
  * @returns {Promise.<{ batch_job: string }>}
  */
 function createBatchJob( req ) {
-  var batch_job;
-  var batch_job_directory;
+  var batch_job = setupBatchJob( req );
 
-  batch_job = setupBatchJob( req );
-
-  batch_job_directory = path.join(
+  var batch_job_directory = path.join(
     batch_job.directory.path,
     batch_job.directory.name
   );
 
-  return Promise.all( mkdirp( batch_job_directory ) )
+  var promise_result = {
+    batch_job: null,
+    message: null
+  };
+
+  /**
+   * insure root batch job directories exist
+   */
+  return createBatchJobDirectories()
     .then(
       /**
+       * create the new batch job directory in the appropriate root batch job directory
+       *
+       * @returns {Promise[]}
+       */
+      function () {
+        return Promise.all( mkdirp( batch_job_directory ) );
+      }
+    )
+    .then(
+      /**
+       * create the batch job
+       *
        * @returns {Promise.<boolean>}
        */
       function () {
@@ -64,10 +82,14 @@ function createBatchJob( req ) {
     )
     .then(
       /**
-       * @returns {{ batch_job: string }}
+       * @returns {{ batch_job: string|null, message: string|null }}
        */
       function () {
-        return { batch_job: batch_job.directory.name };
+        promise_result.batch_job = batch_job.directory.name;
+        promise_result.message = 'batch job created';
+        console.log( new Date().toUTCString(), 'createBatchJob()', promise_result );
+
+        return promise_result;
       }
     )
     .catch(
