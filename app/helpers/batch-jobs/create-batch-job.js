@@ -38,6 +38,9 @@ function setupBatchJob( req ) {
 
 /**
  * @param {IncomingMessage} req
+ * @param {Object} req.headers
+ * @param {Object} req.connection
+ *
  * @returns {Promise.<{ batch_job: string }>}
  */
 function createBatchJob( req ) {
@@ -50,6 +53,7 @@ function createBatchJob( req ) {
 
   var promise_result = {
     batch_job: null,
+    ip: req.headers[ 'x-forwarded-for' ] || req.connection.remoteAddress,
     message: null
   };
 
