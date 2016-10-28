@@ -1,7 +1,8 @@
 {{> html-open }}
-<h1>historypin internet archive</h1>
-<p>an application that allows one to upload historypin collections to the internet archive</p>
-<h2>batch-jobs</h2>
+<h1><a href="/" title="historypin internet archive">historypin internet archive</a></h1>
+<span class="nav active">batch jobs</span>
+<p>current batch jobs and their state</p>
+
 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 <table class="table table-striped">
   <thead>
