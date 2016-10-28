@@ -47,7 +47,7 @@ function createMetadataCronJob() {
   );
 
   console.log(
-    new Date().toISOString(),
+    new Date().toUTCString(),
     'cronjob metadata() created - %schedule'
       .replace( '%schedule', config.cron.schedules.metadata_jobs )
   );

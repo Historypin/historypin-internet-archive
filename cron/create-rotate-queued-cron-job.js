@@ -47,7 +47,7 @@ function createRotateQueuedCronJob() {
   );
 
   console.log(
-    new Date().toISOString(),
+    new Date().toUTCString(),
     'cronjob rotateQueued() created - %schedule'
       .replace( '%schedule', config.cron.schedules.rotate_queued )
   );

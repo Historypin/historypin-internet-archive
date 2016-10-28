@@ -47,7 +47,7 @@ function createAddPinsCronJob() {
   );
 
   console.log(
-    new Date().toISOString(),
+    new Date().toUTCString(),
     'cronjob addPins() created - %schedule'
       .replace( '%schedule', config.cron.schedules.addpins )
   );
