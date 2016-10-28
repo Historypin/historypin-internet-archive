@@ -13,7 +13,7 @@ var getPageContext = require( '../../contexts/pages/home' );
  * @param {ServerResponse} res
  * @param {Function} res.render
  */
-module.exports = function getIndex( req, res ) {
+function getHome( req, res ) {
   var context;
 
   context = getDefaultContext( req );
@@ -21,4 +21,6 @@ module.exports = function getIndex( req, res ) {
   context = getPageContext( context );
 
   res.render( context.template, context );
-};
+}
+
+module.exports = getHome;

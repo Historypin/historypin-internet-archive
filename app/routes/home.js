@@ -1,9 +1,13 @@
 'use strict';
 
+var getHome = require( '../middleware/pages/home' );
+
 /**
  * @param {Function} router
  * @param {Function} router.get
  */
-module.exports = function addHomeRouting( router ) {
-  router.get( '/', require( '../controllers/home/get' ) );
-};
+function addHomeRouting( router ) {
+  router.get( '/', getHome );
+}
+
+module.exports = addHomeRouting;
