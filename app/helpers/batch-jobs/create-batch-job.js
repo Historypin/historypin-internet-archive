@@ -27,7 +27,7 @@ function setupBatchJob( req ) {
   batch_job.filename = config.batch_job.filename;
   batch_job.pins.count = parseInt( req.body.count, 10 );
   batch_job.project = project;
-  batch_job.state.avaailable = config.batch_job.state.available;
+  batch_job.state.available = config.batch_job.state.available;
   batch_job.state.current = config.batch_job.state.current;
   batch_job.state.initial = config.batch_job.state.initial;
   batch_job.state.play_pause_action = config.batch_job.state.play_pause_action;
