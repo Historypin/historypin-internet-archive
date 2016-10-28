@@ -21,7 +21,8 @@ var batch_job = {
   state: {
     available: [],
     current: '',
-    'play-pause-action': 'pause'
+    initial: '',
+    play_pause_action: ''
   },
   timestamp: 0
 };
