@@ -91,7 +91,7 @@ function createBatchJob( req ) {
       function () {
         promise_result.batch_job = batch_job.directory.name;
         promise_result.message = 'batch job created';
-        console.log( new Date().toUTCString(), 'createBatchJob()', promise_result );
+        console.log( new Date().toUTCString(), 'createBatchJob()', JSON.stringify( promise_result ) );
 
         return promise_result;
       }

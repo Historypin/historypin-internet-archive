@@ -16,11 +16,11 @@ function addPins() {
   addPinsToProcessingBatchJob()
     .then(
       /**
-       * @param {string} result
+       * @param {{ batch_job: string|null, message: string|null }} result
        * @returns {undefined}
        */
       function ( result ) {
-        console.log( new Date().toUTCString(), 'cronjob addPins()', result );
+        console.log( new Date().toUTCString(), 'cronjob addPins()', JSON.stringify( result ) );
       }
     )
     .catch(

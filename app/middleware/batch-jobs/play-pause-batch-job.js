@@ -22,7 +22,7 @@ function playPauseBatchJob( req, res ) {
       function ( result ) {
         res.send( result );
         result.ip = req.headers[ 'x-forwarded-for' ] || req.connection.remoteAddress;
-        console.log( new Date().toUTCString(), 'playPauseBatchJob()', result );
+        console.log( new Date().toUTCString(), 'playPauseBatchJob()', JSON.stringify( result ) );
       }
     )
     .catch(

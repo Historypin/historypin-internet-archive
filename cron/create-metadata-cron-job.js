@@ -16,11 +16,11 @@ function metadata() {
   createMetadataJobs()
     .then(
       /**
-       * @param {string} result
+       * @param {{ batch_job: string|null, message: string|null }} result
        * @returns {undefined}
        */
       function ( result ) {
-        console.log( new Date().toUTCString(), 'cronjob metadata()', result );
+        console.log( new Date().toUTCString(), 'cronjob metadata()', JSON.stringify( result ) );
       }
     )
     .catch(

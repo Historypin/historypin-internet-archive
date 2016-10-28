@@ -16,11 +16,11 @@ function rotateQueued() {
   rotateQueuedBatchJob()
     .then(
       /**
-       * @param {string} result
+       * @param {{ batch_job: string|null, message: string|null }} result
        * @returns {undefined}
        */
       function ( result ) {
-        console.log( new Date().toUTCString(), 'cronjob rotateQueued()', result );
+        console.log( new Date().toUTCString(), 'cronjob rotateQueued()', JSON.stringify( result ) );
       }
     )
     .catch(
