@@ -6,6 +6,7 @@
  * module dependencies
  */
 var getFiles = require( '../helpers/get-files' );
+var path = require('path');
 
 /**
  * @param {Function} app
@@ -20,7 +21,7 @@ var getFiles = require( '../helpers/get-files' );
 function routes( app, express ) {
   var router = express.Router();
 
-  app.use( express.static( 'public' ) );
+  app.use( express.static( path.join( __dirname, '..', '..', 'public' ) ) );
 
   getFiles( __dirname ).reduce(
     function ( acc, file ) {
