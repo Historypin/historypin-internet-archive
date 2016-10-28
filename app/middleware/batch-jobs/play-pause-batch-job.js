@@ -12,7 +12,7 @@ var playPauseBatchJobHelper = require( '../../helpers/batch-jobs/play-pause-batc
  * @param {Function} res.send
  * @param {Function} res.status
  */
-function pauseBatchJob( req, res ) {
+function playPauseBatchJob( req, res ) {
   playPauseBatchJobHelper( req )
     .then(
       /**
@@ -21,6 +21,8 @@ function pauseBatchJob( req, res ) {
        */
       function ( result ) {
         res.send( result );
+        result.ip = req.headers[ 'x-forwarded-for' ] || req.connection.remoteAddress;
+        console.log( new Date().toUTCString(), 'playPauseBatchJob()', result );
       }
     )
     .catch(
@@ -36,4 +38,4 @@ function pauseBatchJob( req, res ) {
     );
 }
 
-module.exports = pauseBatchJob;
+module.exports = playPauseBatchJob;
