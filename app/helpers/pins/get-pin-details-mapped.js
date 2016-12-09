@@ -12,11 +12,11 @@ var path = require( 'path' );
  * internet archive and history pin metadata to the pin detail object. this added data
  * will be used in the metadata upload to the internet archive
  *
- * @param {Array.<[{ pin:{} }]>} metadata_jobs
+ * @param {Array.<[{ pin:pin }]>} pins
  * @throws {Error}
- * @returns {Promise.<[{ pin:{}, metadata_mapped:{} }]>}
+ * @returns {Promise.<[{ pin:pin, metadata_mapped:{} }]>}
  */
-function getPinDetailsMapped( metadata_jobs ) {
+function getPinDetailsMapped( pins ) {
   return loadJsonFile(
     path.join(
       __dirname, '..', '..', '..', 'public', 'json', 'internet-archive-to-historypin.json'
@@ -28,14 +28,14 @@ function getPinDetailsMapped( metadata_jobs ) {
        * @returns {Array}
        */
       function ( mapping ) {
-        return metadata_jobs.reduce(
+        return pins.reduce(
           /**
            * @param {Array} acc
            * @param {Object} metadata_job
-           * @returns {Array.<[{ pin:{}, metadata_mapped:{} }]>}
+           * @returns {Array.<[{ pin:pin, metadata_mapped:{} }]>}
            */
           function ( acc, metadata_job ) {
-            metadata_job.metadata_mapped = getMappedMetadata( mapping, metadata_job.pin );
+            metadata_job.metadata_mapped = getMappedMetadata( mapping, metadata_job );
             acc.push( metadata_job );
 
             return acc;

@@ -1,3 +1,5 @@
+/* eslint max-lines:off */
+
 'use strict';
 
 /**
@@ -12,6 +14,7 @@ var getPinDetails = require( '../api/get-pin-details' );
 var getPinDetailsMapped = require( '../pins/get-pin-details-mapped' );
 var path = require( 'path' );
 var saveMetadataJobs = require( './save-metadata-jobs' );
+var separateCopyrightPins = require( '../pins/separate-copyright-pins' );
 var writeJsonFile = require( 'write-json-file' );
 
 /**
@@ -19,45 +22,60 @@ var writeJsonFile = require( 'write-json-file' );
  * @returns {Promise.<string|{batch_job: Object, path: string}>}
  */
 function createMetadataJobs() {
+  var current_batch_job;
   var directory_metadata_queued;
-  var pin_ids_added;
-  var project_batch_job;
+  var directory_metadata_skipped;
+  var pin_ids_queued;
+  var pin_ids_skipped;
+  var pin_ids_to_process;
+  var pins_to_process;
+  var total_pins_processed = 0;
 
   var promise_result = {
-    batch_job: null,
-    message: null
+    batch_job: '',
+    message: ''
   };
 
   /**
-   * get the current project batch job in the processing directory
+   * get a list of batch jobs from the processing state
    *
-   * @returns {Promise.<{ message: string }|batch_job>}
+   * @returns {Promise.<{ batch_job: string, message: string }>}
    */
   return getBatchJobs( 'processing' )
     .then(
       /**
-       * get a list of the currently queued metadata batch jobs
+       * set the current_batch_job to the first batch job from the list
        *
-       * @param {batch_job} batch_job
-       *
-       * @returns {Promise.<{directories: string[], files: string[]}>|undefined}
+       * @param {batch_job[]} batch_jobs
+       * @returns {batch_job}
        */
-      function ( batch_job ) {
-        if ( !Array.isArray( batch_job ) || batch_job.length < 1 ) {
-          promise_result.message = 'no batch jobs to process';
+      function ( batch_jobs ) {
+        if ( !Array.isArray( batch_jobs ) || batch_jobs.length < 1 ) {
           return;
         }
 
-        project_batch_job = batch_job[ 0 ];
-        promise_result.batch_job = project_batch_job.directory.name;
+        current_batch_job = batch_jobs[ 0 ];
+      }
+    )
+    .then(
+      /**
+       * get a list of metadata jobs in the queued state
+       *
+       * @returns {Promise.<{directories: string[], files: string[]}|Error>|undefined}
+       */
+      function () {
+        if ( !current_batch_job ) {
+          return;
+        }
 
-        if ( project_batch_job.pins[ 'all-metadata-jobs-queued' ] ) {
-          promise_result.message = 'all metadata jobs have been queued';
+        promise_result.batch_job = current_batch_job.directory.name;
+
+        if ( current_batch_job.pins[ 'all-metadata-jobs-queued' ] ) {
           return;
         }
 
         directory_metadata_queued = path.join(
-          project_batch_job.directory.path, project_batch_job.directory.name, 'metadata', 'queued'
+          current_batch_job.directory.path, current_batch_job.directory.name, 'metadata', 'queued'
         );
 
         return getDirectoriesFiles( directory_metadata_queued );
@@ -65,6 +83,8 @@ function createMetadataJobs() {
     )
     .catch(
       /**
+       * if the metadata/queued directory doesn't exist, create the metadata directories
+       *
        * @param {Error} err
        * @throws {Error}
        * @returns {Promise.<{ directories: string[], files: string[] }>}
@@ -74,7 +94,7 @@ function createMetadataJobs() {
           /**
            * @returns {Promise.<Promise[]>}
            */
-          return createMetadataJobDirectories( project_batch_job )
+          return createMetadataJobDirectories( current_batch_job )
             .then(
               /**
                * @returns {Promise.<{ directories: string[], files: string[] }>}
@@ -90,27 +110,20 @@ function createMetadataJobs() {
     )
     .then(
       /**
-       * create an array of metadata jobs not yet queued for processing
-       * throttle the list based on config.metadata_job.creation_throttle
+       * subtract the list of pin ids in the queued state
+       * from the total batch job pins that need to be processed
        *
-       * @param {Object|undefined} directories_files
-       * @param {Array} directories_files.files
-       *
+       * @param {{directories: string[], files: string[]}|undefined} directories_files
        * @returns {Array|undefined}
        */
       function ( directories_files ) {
         var files;
 
-        /**
-         * @type {Array}
-         */
-        var pin_ids;
-
         if ( !directories_files || !Array.isArray( directories_files.files ) ) {
           return;
         }
 
-        // convert directory files, 1234.json, to pin ids
+        // convert queued directory files, 1234.json, to pin ids
         files = directories_files.files.reduce(
           function ( acc, file ) {
             acc.push( parseInt( file, 10 ) );
@@ -122,22 +135,77 @@ function createMetadataJobs() {
 
         // get a diff between the currently queued metadata jobs
         // and those that still need to be created
-        pin_ids = difference( project_batch_job.pins.ids, files );
+        pin_ids_to_process = difference( current_batch_job.pins.ids, files );
+      }
+    )
+    .then(
+      /**
+       * get a list of metadata jobs in the skipped state
+       *
+       * @returns {Promise.<{directories: string[], files: string[]}|Error>|undefined}
+       */
+      function () {
+        if ( !current_batch_job ) {
+          return;
+        }
 
-        // throttle the diff
-        pin_ids = pin_ids.slice( 0, config.metadata_job.creation_throttle );
-        pin_ids_added = pin_ids.length;
+        directory_metadata_skipped = path.join(
+          current_batch_job.directory.path, current_batch_job.directory.name, 'metadata', 'skipped'
+        );
 
-        return pin_ids;
+        return getDirectoriesFiles( directory_metadata_skipped );
+      }
+    )
+    .then(
+      /**
+       * subtract the list of pin ids in the skipped state
+       * from the pin_ids_to_process
+       *
+       * @param {{directories: string[], files: string[]}|undefined} directories_files
+       * @returns {Array|undefined}
+       */
+      function ( directories_files ) {
+        var files;
+
+        if ( !directories_files || !Array.isArray( directories_files.files ) ) {
+          return;
+        }
+
+        // convert skipped directory files, 1234.json, to pin ids
+        files = directories_files.files.reduce(
+          function ( acc, file ) {
+            acc.push( parseInt( file, 10 ) );
+
+            return acc;
+          },
+          []
+        );
+
+        // get a diff between the currently skipped metadata jobs
+        // and those that still need to be created
+        pin_ids_to_process = difference( pin_ids_to_process, files );
+      }
+    )
+    .then(
+      /**
+       * throttle the pin_ids_to_process based on config.metadata_job.creation_throttle
+       * @returns {[]|undefined}
+       */
+      function () {
+        if ( !pin_ids_to_process ) {
+          return;
+        }
+
+        pin_ids_to_process = pin_ids_to_process.slice( 0, config.metadata_job.creation_throttle );
+        return pin_ids_to_process;
       }
     )
     .then(
       /**
        * get pin details for each pin id provided
-       * add that detail to each metadata job
        *
-       * @param {Array|undefined} pin_ids
-       * @returns {Promise.<[{ pin:{} }]>|undefined}
+       * @param {[]|undefined} pin_ids
+       * @returns {Promise.<pin[]>|undefined}
        */
       function ( pin_ids ) {
         if ( !Array.isArray( pin_ids ) ) {
@@ -145,58 +213,105 @@ function createMetadataJobs() {
         }
 
         if ( pin_ids.length < 1 ) {
-          promise_result.message = 'no pin ids to process';
           return;
         }
 
         return getPinDetails(
-          project_batch_job.project,
+          current_batch_job.project,
           pin_ids
         );
       }
     )
     .then(
       /**
-       * map the hp metadata to the ia metadata
-       * add that mapping result to each metadata job
+       * separate the copyright and public domain pins
        *
-       * @param {Array.<[{ pin:{} }]>|undefined} metadata_jobs
-       * @returns {Promise.<[{ pin:{}, metadata_mapped:{} }]>|undefined}
+       * @param {pin[]|undefined} pin_details
+       * @returns {Promise.<{ pins:{ copyright: pin[], public_domain: pin[] } }>|undefined}
        */
-      function ( metadata_jobs ) {
-        if ( !Array.isArray( metadata_jobs ) ) {
+      function ( pin_details ) {
+        if ( !Array.isArray( pin_details ) ) {
           return;
         }
 
-        return getPinDetailsMapped( metadata_jobs );
+        if ( pin_details.length < 1 ) {
+          return;
+        }
+
+        return separateCopyrightPins( pin_details );
       }
     )
     .then(
       /**
-       * save the metadata jobs
+       * save copyright pins to skipped state
        *
-       * @param {Array.<[{ pin:{}, metadata_mapped:{} }]>|undefined} metadata_jobs
+       * @param {{ copyright: pin[], public_domain: pin[] }|undefined} pins_separated
        * @returns {Promise.<Promise[]>|undefined}
        */
-      function ( metadata_jobs ) {
-        if ( !Array.isArray( metadata_jobs ) ) {
+      function ( pins_separated ) {
+        if ( !pins_separated || !Array.isArray( pins_separated.copyright ) ) {
           return;
         }
 
+        pins_to_process = pins_separated;
+        pin_ids_skipped = pins_to_process.copyright.length;
+
         return saveMetadataJobs(
           path.join(
-            project_batch_job.directory.path,
-            project_batch_job.directory.name,
+            current_batch_job.directory.path,
+            current_batch_job.directory.name,
             'metadata',
-            'queued'
+            'skipped'
           ),
-          metadata_jobs
+          pins_to_process.copyright
         );
       }
     )
     .then(
       /**
-       * get an update of the queued metadata file names
+       * map metadata
+       *
+       * for any pins.public_domain, map the hp metadata to the ia metadata
+       * add that mapping result to each metadata job
+       *
+       * @returns {Promise.<[{ pin:pin, metadata_mapped:{} }]>|undefined}
+       */
+      function () {
+        if ( !pins_to_process || !Array.isArray( pins_to_process.public_domain ) ) {
+          return;
+        }
+
+        return getPinDetailsMapped( pins_to_process.public_domain );
+      }
+    )
+    .then(
+      /**
+       * save public domain pins to the queued state
+       *
+       * @param {Array.<[{ pin:pin, metadata_mapped:{} }]>|undefined} pins_to_queue
+       * @returns {Promise.<Promise[]>|undefined}
+       */
+      function ( pins_to_queue ) {
+        if ( !Array.isArray( pins_to_queue ) ) {
+          return;
+        }
+
+        pin_ids_queued = pins_to_queue.length;
+
+        return saveMetadataJobs(
+          path.join(
+            current_batch_job.directory.path,
+            current_batch_job.directory.name,
+            'metadata',
+            'queued'
+          ),
+          pins_to_queue
+        );
+      }
+    )
+    .then(
+      /**
+       * get an update of the queued metadata file directory
        *
        * @param {Promise.<Promise[]>|undefined} result
        * @returns {Promise.<{directories: string[], files: string[]}>|undefined}
@@ -211,7 +326,52 @@ function createMetadataJobs() {
     )
     .then(
       /**
-       * if all metadata jobs have been queued, update the batch-job.json
+       * add the total number of files in the queued directory to the total_pins_processed count
+       *
+       * @param {{directories: string[], files: string[]}|undefined} directories_files
+       * @returns {undefined}
+       */
+      function ( directories_files ) {
+        if ( !directories_files || !Array.isArray( directories_files.files ) ) {
+          return;
+        }
+
+        total_pins_processed += directories_files.files.length;
+      }
+    )
+    .then(
+      /**
+       * get an update of the skipped metadata file directory
+       *
+       * @param {Promise.<Promise[]>|undefined} result
+       * @returns {Promise.<{directories: string[], files: string[]}>|undefined}
+       */
+      function ( result ) {
+        if ( !result ) {
+          return;
+        }
+
+        return getDirectoriesFiles( directory_metadata_skipped );
+      }
+    )
+    .then(
+      /**
+       * add the total number of files in the skipped directory to the total_pins_processed count
+       *
+       * @param {{directories: string[], files: string[]}|undefined} directories_files
+       * @returns {undefined}
+       */
+      function ( directories_files ) {
+        if ( !directories_files || !Array.isArray( directories_files.files ) ) {
+          return;
+        }
+
+        total_pins_processed += directories_files.files.length;
+      }
+    )
+    .then(
+      /**
+       * if all metadata jobs have been queued, update the all-metadata-jobs-queued property
        *
        * @param {Promise.<{directories: string[], files: string[]}>|undefined} directories_files
        * @param {Array} directories_files.files
@@ -222,27 +382,35 @@ function createMetadataJobs() {
           return;
         }
 
-        if ( directories_files.files.length >= project_batch_job.pins.count ) {
-          project_batch_job.pins[ 'all-metadata-jobs-queued' ] = true;
+        if ( total_pins_processed >= current_batch_job.pins.count ) {
+          current_batch_job.pins[ 'all-metadata-jobs-queued' ] = true;
 
           return writeJsonFile(
             path.join(
-              project_batch_job.directory.path,
-              project_batch_job.directory.name,
-              project_batch_job.filename
+              current_batch_job.directory.path,
+              current_batch_job.directory.name,
+              current_batch_job.filename
             ),
-            project_batch_job
+            current_batch_job
           );
         }
       }
     )
     .then(
       /**
-       * @returns {{ batch_job: string|null, message: string|null }}
+       * @returns {{ batch_job: string, message: string }}
        */
       function () {
-        if ( pin_ids_added ) {
-          promise_result.message = 'added %n metadata jobs'.replace( '%n', pin_ids_added );
+        if ( pin_ids_queued ) {
+          promise_result.message = 'queued %n metadata jobs'.replace( '%n', pin_ids_queued );
+        }
+
+        if ( pin_ids_skipped ) {
+          if ( promise_result.message ) {
+            promise_result.message += ', ';
+          }
+
+          promise_result.message += 'skipped %n metadata jobs'.replace( '%n', pin_ids_skipped );
         }
 
         return promise_result;

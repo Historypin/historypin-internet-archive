@@ -20,6 +20,10 @@ function addPins() {
        * @returns {undefined}
        */
       function ( result ) {
+        if ( !result.message ) {
+          return;
+        }
+
         console.log( new Date().toUTCString(), 'cronjob addPins()', JSON.stringify( result ) );
       }
     )
@@ -30,6 +34,7 @@ function addPins() {
        */
       function ( err ) {
         console.log( new Date().toUTCString(), 'cronjob addPins()', err );
+        throw err;
       }
     );
 }

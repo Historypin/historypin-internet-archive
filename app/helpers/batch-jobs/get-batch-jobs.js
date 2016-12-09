@@ -38,7 +38,7 @@ function getBatchJobs( state ) {
           return createBatchJobDirectories()
             .then(
               /**
-               * @returns {Promise}
+               * @returns {Promise.<{ directories: string[], files: string[] }>}
                */
               function () {
                 return getDirectoriesFiles( directory_state );
@@ -59,7 +59,7 @@ function getBatchJobs( state ) {
           /**
            * @param {Array} acc
            * @param {string} batch_job_directory
-           * @returns {[{}]}
+           * @returns {batch_job[]}
            */
           function ( acc, batch_job_directory ) {
             acc.push(

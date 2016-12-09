@@ -20,6 +20,10 @@ function metadata() {
        * @returns {undefined}
        */
       function ( result ) {
+        if ( !result.message ) {
+          return;
+        }
+
         console.log( new Date().toUTCString(), 'cronjob metadata()', JSON.stringify( result ) );
       }
     )
@@ -30,6 +34,7 @@ function metadata() {
        */
       function ( err ) {
         console.log( new Date().toUTCString(), 'cronjob metadata()', err );
+        throw err;
       }
     );
 }

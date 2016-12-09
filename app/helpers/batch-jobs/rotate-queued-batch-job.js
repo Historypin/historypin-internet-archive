@@ -103,7 +103,6 @@ function rotateQueuedBatchJob() {
        */
       function ( directories_files ) {
         if ( !directories_files || directories_files.directories.length < 1 ) {
-          promise_result.message = 'no batch jobs to rotate';
           return;
         }
 

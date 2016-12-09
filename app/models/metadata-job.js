@@ -1,10 +1,15 @@
 'use strict';
 
 /**
+ * module dependencies
+ */
+var pin = require( './pin' );
+
+/**
  * @namespace
  */
 var metadata_job = {
-  pin: {},
+  pin: pin,
   project: '',
   states: {
     available: [ 'completed', 'errored', 'processing', 'queued' ],

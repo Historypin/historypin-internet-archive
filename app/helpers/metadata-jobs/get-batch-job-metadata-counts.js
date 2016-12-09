@@ -43,6 +43,15 @@ function getBatchJobMetadataCounts( batch_job ) {
           function ( acc, result ) {
             Object.keys( result ).reduce(
               function ( acc2, state ) {
+                if ( result[ state ].isRejected() ) {
+                  if ( result[ state ].reason().code === 'ENOENT' ) {
+                    batch_job.metadata[ state ] = 0;
+                    return acc2;
+                  }
+
+                  throw result[ state ].reason();
+                }
+
                 batch_job.metadata[ state ] = result[ state ].value().files.length;
                 return acc2;
               },

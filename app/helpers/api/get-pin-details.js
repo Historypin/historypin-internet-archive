@@ -16,7 +16,7 @@ var Promise = require( 'bluebird' );
  *
  * @throws {Error}
  *
- * @returns {Promise.<[{ pin:{} }]>}
+ * @returns {Promise.<pin[]>}
  */
 function getPinDetails( project, pin_ids ) {
   var promises;
@@ -33,7 +33,7 @@ function getPinDetails( project, pin_ids ) {
     .then(
       /**
        * @param {Array} results
-       * @returns {[{ pin:{} }]}
+       * @returns {pin[]}
        */
       function ( results ) {
         return results.reduce(
@@ -46,7 +46,7 @@ function getPinDetails( project, pin_ids ) {
            * @returns {Array}
            */
           function ( acc, result ) {
-            acc.push( { pin: JSON.parse( result.body ) } );
+            acc.push( JSON.parse( result.body ) );
 
             return acc;
           },

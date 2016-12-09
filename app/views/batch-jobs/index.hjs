@@ -24,6 +24,7 @@
     <th>errored</th>
     <th>processing</th>
     <th>queued</th>
+    <th>skipped</th>
   </tr>
   </thead>
   <tbody id="batch-job-rows">
@@ -38,6 +39,7 @@
       <td class="center">{{ metadata.errored }}</td>
       <td class="center">{{ metadata.processing }}</td>
       <td class="center">{{ metadata.queued }}</td>
+      <td class="center">{{ metadata.skipped }}</td>
     </tr>
   {{/ batch_jobs }}
   </tbody>

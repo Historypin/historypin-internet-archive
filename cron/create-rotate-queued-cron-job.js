@@ -20,6 +20,10 @@ function rotateQueued() {
        * @returns {undefined}
        */
       function ( result ) {
+        if ( !result.message ) {
+          return;
+        }
+
         console.log( new Date().toUTCString(), 'cronjob rotateQueued()', JSON.stringify( result ) );
       }
     )
@@ -30,6 +34,7 @@ function rotateQueued() {
        */
       function ( err ) {
         console.log( new Date().toUTCString(), 'cronjob rotateQueued()', err );
+        throw err;
       }
     );
 }

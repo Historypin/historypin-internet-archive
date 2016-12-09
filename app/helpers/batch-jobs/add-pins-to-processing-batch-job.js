@@ -37,7 +37,6 @@ function addPinsToProcessingBatchJob() {
        */
       function ( batch_jobs ) {
         if ( batch_jobs.length < 1 ) {
-          promise_result.message = 'no batch jobs to process';
           return;
         }
 
@@ -45,7 +44,6 @@ function addPinsToProcessingBatchJob() {
         promise_result.batch_job = batch_job.directory.name;
 
         if ( batch_job.pins[ 'all-pins-added' ] ) {
-          promise_result.message = 'all pins have been added';
           return;
         }
 

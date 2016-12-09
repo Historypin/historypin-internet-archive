@@ -10,7 +10,7 @@ var writeJsonFile = require( 'write-json-file' );
 /**
  *
  * @param {string} directory
- * @param {Array.<[{ pin:{}, metadata_mapped:{} }]>} metadata_jobs
+ * @param {Array.<pin[]|[{ pin:pin, metadata_mapped:{} }]>} metadata_jobs
  *
  * @throws {Error}
  * @returns {Promise.<Promise[]>}
@@ -20,7 +20,7 @@ function saveMetadataJobs( directory, metadata_jobs ) {
     metadata_jobs.reduce(
       function ( acc, metadata_job ) {
         acc.push(
-          writeJsonFile( path.join( directory, metadata_job.pin.id + '.json' ), metadata_job )
+          writeJsonFile( path.join( directory, metadata_job.id + '.json' ), metadata_job )
         );
 
         return acc;
