@@ -26,8 +26,12 @@ function validateCronConfig() {
     throw new Error( 'config.cron.schedules[ metadata-jobs ] does not exist as a string' );
   }
 
-  if ( typeof config.cron.schedules.rotate_queued !== 'string' ) {
-    throw new Error( 'config.cron.schedules[ rotate-queued ] does not exist as a string' );
+  if ( typeof config.cron.schedules.rotate_queued_batch !== 'string' ) {
+    throw new Error( 'config.cron.schedules[ rotate-queued-batch ] does not exist as a string' );
+  }
+
+  if ( typeof config.cron.schedules.rotate_queued_metadata !== 'string' ) {
+    throw new Error( 'config.cron.schedules[ rotate-queued-metadata ] does not exist as a string' );
   }
 
   if ( typeof config.timezone !== 'string' ) {

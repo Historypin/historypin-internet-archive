@@ -23,8 +23,6 @@ var writeJsonFile = require( 'write-json-file' );
  */
 function createMetadataJobs() {
   var current_batch_job;
-  var directory_metadata_queued;
-  var directory_metadata_skipped;
   var pin_ids_queued;
   var pin_ids_skipped;
   var pin_ids_to_process;
@@ -71,14 +69,18 @@ function createMetadataJobs() {
         promise_result.batch_job = current_batch_job.directory.name;
 
         if ( current_batch_job.pins[ 'all-metadata-jobs-queued' ] ) {
+          current_batch_job = null;
           return;
         }
 
-        directory_metadata_queued = path.join(
-          current_batch_job.directory.path, current_batch_job.directory.name, 'metadata', 'queued'
+        return getDirectoriesFiles(
+          path.join(
+            current_batch_job.directory.path,
+            current_batch_job.directory.name,
+            'metadata',
+            'queued'
+          )
         );
-
-        return getDirectoriesFiles( directory_metadata_queued );
       }
     )
     .catch(
@@ -100,7 +102,14 @@ function createMetadataJobs() {
                * @returns {Promise.<{ directories: string[], files: string[] }>}
                */
               function () {
-                return getDirectoriesFiles( directory_metadata_queued );
+                return getDirectoriesFiles(
+                  path.join(
+                    current_batch_job.directory.path,
+                    current_batch_job.directory.name,
+                    'metadata',
+                    'queued'
+                  )
+                );
               }
             );
         }
@@ -149,11 +158,14 @@ function createMetadataJobs() {
           return;
         }
 
-        directory_metadata_skipped = path.join(
-          current_batch_job.directory.path, current_batch_job.directory.name, 'metadata', 'skipped'
+        return getDirectoriesFiles(
+          path.join(
+            current_batch_job.directory.path,
+            current_batch_job.directory.name,
+            'metadata',
+            'skipped'
+          )
         );
-
-        return getDirectoriesFiles( directory_metadata_skipped );
       }
     )
     .then(
@@ -321,7 +333,14 @@ function createMetadataJobs() {
           return;
         }
 
-        return getDirectoriesFiles( directory_metadata_queued );
+        return getDirectoriesFiles(
+          path.join(
+            current_batch_job.directory.path,
+            current_batch_job.directory.name,
+            'metadata',
+            'queued'
+          )
+        );
       }
     )
     .then(
@@ -329,7 +348,7 @@ function createMetadataJobs() {
        * add the total number of files in the queued directory to the total_pins_processed count
        *
        * @param {{directories: string[], files: string[]}|undefined} directories_files
-       * @returns {undefined}
+       * @returns {number}
        */
       function ( directories_files ) {
         if ( !directories_files || !Array.isArray( directories_files.files ) ) {
@@ -337,21 +356,30 @@ function createMetadataJobs() {
         }
 
         total_pins_processed += directories_files.files.length;
+
+        return total_pins_processed;
       }
     )
     .then(
       /**
        * get an update of the skipped metadata file directory
        *
-       * @param {Promise.<Promise[]>|undefined} result
+       * @param {number} total_pins_processed
        * @returns {Promise.<{directories: string[], files: string[]}>|undefined}
        */
-      function ( result ) {
-        if ( !result ) {
+      function ( total_pins_processed ) {
+        if ( !total_pins_processed ) {
           return;
         }
 
-        return getDirectoriesFiles( directory_metadata_skipped );
+        return getDirectoriesFiles(
+          path.join(
+            current_batch_job.directory.path,
+            current_batch_job.directory.name,
+            'metadata',
+            'skipped'
+          )
+        );
       }
     )
     .then(
@@ -359,7 +387,7 @@ function createMetadataJobs() {
        * add the total number of files in the skipped directory to the total_pins_processed count
        *
        * @param {{directories: string[], files: string[]}|undefined} directories_files
-       * @returns {undefined}
+       * @returns {number}
        */
       function ( directories_files ) {
         if ( !directories_files || !Array.isArray( directories_files.files ) ) {
@@ -367,37 +395,42 @@ function createMetadataJobs() {
         }
 
         total_pins_processed += directories_files.files.length;
+
+        return total_pins_processed;
       }
     )
     .then(
       /**
        * if all metadata jobs have been queued, update the all-metadata-jobs-queued property
        *
-       * @param {Promise.<{directories: string[], files: string[]}>|undefined} directories_files
-       * @param {Array} directories_files.files
+       * @param {number} total_pins_processed
        * @returns {undefined}
        */
-      function ( directories_files ) {
-        if ( !directories_files ) {
+      function (total_pins_processed) {
+        if ( !total_pins_processed ) {
           return;
         }
 
-        if ( total_pins_processed >= current_batch_job.pins.count ) {
-          current_batch_job.pins[ 'all-metadata-jobs-queued' ] = true;
-
-          return writeJsonFile(
-            path.join(
-              current_batch_job.directory.path,
-              current_batch_job.directory.name,
-              current_batch_job.filename
-            ),
-            current_batch_job
-          );
+        if ( total_pins_processed < current_batch_job.pins.count ) {
+          return;
         }
+
+        current_batch_job.pins[ 'all-metadata-jobs-queued' ] = true;
+
+        return writeJsonFile(
+          path.join(
+            current_batch_job.directory.path,
+            current_batch_job.directory.name,
+            current_batch_job.filename
+          ),
+          current_batch_job
+        );
       }
     )
     .then(
       /**
+       * update promise result and return it
+       *
        * @returns {{ batch_job: string, message: string }}
        */
       function () {

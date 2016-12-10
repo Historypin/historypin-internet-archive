@@ -5,14 +5,18 @@
  */
 var createAddPinsCrongJob = require( './create-add-pins-cron-job' );
 var createMetadataCronJob = require( './create-metadata-cron-job' );
-var createRotateQueuedCronJob = require( './create-rotate-queued-cron-job' );
+var createProcessMetadataCronJob = require( './create-process-metadata-cron-job' );
+var createRotateQueuedBatchCronJob = require( './create-rotate-queued-batch-cron-job' );
+var createRotateQueuedMetadataCronJob = require( './create-rotate-queued-metadata-cron-job' );
 var validateCronConfig = require( './validate-cron-config' );
 
 function cron() {
   validateCronConfig();
   createAddPinsCrongJob();
   createMetadataCronJob();
-  createRotateQueuedCronJob();
+  createProcessMetadataCronJob();
+  createRotateQueuedBatchCronJob();
+  createRotateQueuedMetadataCronJob();
 }
 
 module.exports = cron;

@@ -6,14 +6,14 @@
  * module dependencies
  */
 var config = require( '../app/config/index' );
-var createMetadataJobs = require( '../app/helpers/metadata-jobs/create-metadata-jobs' );
 var CronJob = require( 'cron' ).CronJob;
+var rotateQueuedBatchJob = require( '../app/helpers/batch-jobs/rotate-queued-batch-job' );
 
 /**
  * @returns {undefined}
  */
-function createMetadata() {
-  createMetadataJobs()
+function rotateQueuedBatch() {
+  rotateQueuedBatchJob()
     .then(
       /**
        * @param {{ batch_job: string|null, message: string|null }} result
@@ -24,7 +24,7 @@ function createMetadata() {
           return;
         }
 
-        console.log( new Date().toUTCString(), 'cronjob createMetadataJobs()', JSON.stringify( result ) );
+        console.log( new Date().toUTCString(), 'cronjob rotateQueuedBatch()', JSON.stringify( result ) );
       }
     )
     .catch(
@@ -33,7 +33,7 @@ function createMetadata() {
        * @returns {undefined}
        */
       function ( err ) {
-        console.log( new Date().toUTCString(), 'cronjob createMetadataJobs()', err );
+        console.log( new Date().toUTCString(), 'cronjob rotateQueuedBatch()', err );
         throw err;
       }
     );
@@ -42,10 +42,10 @@ function createMetadata() {
 /**
  * @returns {undefined}
  */
-function createMetadataCronJob() {
+function createRotateQueuedBatchCronJob() {
   new CronJob(
-    config.cron.schedules.metadata_jobs,
-    createMetadata,
+    config.cron.schedules.rotate_queued_batch,
+    rotateQueuedBatch,
     null,
     true,
     config.timezone
@@ -53,9 +53,9 @@ function createMetadataCronJob() {
 
   console.log(
     new Date().toUTCString(),
-    'cronjob metadata() created - %schedule'
-      .replace( '%schedule', config.cron.schedules.metadata_jobs )
+    'cronjob rotateQueuedBatch() created - %schedule'
+      .replace( '%schedule', config.cron.schedules.rotate_queued_batch )
   );
 }
 
-module.exports = createMetadataCronJob;
+module.exports = createRotateQueuedBatchCronJob;

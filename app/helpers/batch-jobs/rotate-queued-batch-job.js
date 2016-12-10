@@ -75,7 +75,7 @@ function rotateQueuedBatchJob() {
     )
     .then(
       /**
-       * if there are directories in the processing state, no need to rotate
+       * if there is a directory in the processing state - no need to rotate
        *
        * if there are no batch job directories in the processing state, get a listing of the
        * directories in the queued state
@@ -93,7 +93,7 @@ function rotateQueuedBatchJob() {
     )
     .then(
       /**
-       * if no batch job directories exist - nothing to rotate
+       * if no batch job directories exist in queued state - nothing to rotate
        *
        * if batch job directories exist, set the current and destination directories for the
        * first batch job

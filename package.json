@@ -39,7 +39,7 @@
     "node-historypin": "git+https://github.com/Historypin/node-historypin.git",
     "node-lang": "git+https://github.com/dan-nl/node-lang.git",
     "node-sass-middleware": "0.9.8",
-    "rename-bluebird": "git://github.com/dan-nl/rename-bluebird.git",
+    "rename-bluebird": "git+https://github.com/dan-nl/rename-bluebird.git",
     "request": "2.76.0",
     "request-debug": "0.2.0",
     "uglify-js": "2.7.4",
