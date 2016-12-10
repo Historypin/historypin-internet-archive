@@ -348,27 +348,27 @@ function createMetadataJobs() {
        * add the total number of files in the queued directory to the total_pins_processed count
        *
        * @param {{directories: string[], files: string[]}|undefined} directories_files
-       * @returns {number}
+       * @returns {boolean}
        */
       function ( directories_files ) {
         if ( !directories_files || !Array.isArray( directories_files.files ) ) {
-          return;
+          return false;
         }
 
         total_pins_processed += directories_files.files.length;
 
-        return total_pins_processed;
+        return true;
       }
     )
     .then(
       /**
        * get an update of the skipped metadata file directory
        *
-       * @param {number} total_pins_processed
+       * @param {boolean} get_update
        * @returns {Promise.<{directories: string[], files: string[]}>|undefined}
        */
-      function ( total_pins_processed ) {
-        if ( !total_pins_processed ) {
+      function ( get_update ) {
+        if ( !get_update ) {
           return;
         }
 
@@ -387,27 +387,27 @@ function createMetadataJobs() {
        * add the total number of files in the skipped directory to the total_pins_processed count
        *
        * @param {{directories: string[], files: string[]}|undefined} directories_files
-       * @returns {number}
+       * @returns {boolean}
        */
       function ( directories_files ) {
         if ( !directories_files || !Array.isArray( directories_files.files ) ) {
-          return;
+          return false;
         }
 
         total_pins_processed += directories_files.files.length;
 
-        return total_pins_processed;
+        return true;
       }
     )
     .then(
       /**
        * if all metadata jobs have been queued, update the all-metadata-jobs-queued property
        *
-       * @param {number} total_pins_processed
+       * @param {number} get_update
        * @returns {undefined}
        */
-      function (total_pins_processed) {
-        if ( !total_pins_processed ) {
+      function (get_update) {
+        if ( !get_update ) {
           return;
         }
 

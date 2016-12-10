@@ -37,6 +37,11 @@ function rotateQueuedMetadataJob() {
     metadata_job: ''
   };
 
+  /**
+   * get a list of batch jobs from the processing state
+   *
+   * @returns {Promise.<{ batch_job: string, message: string }>}
+   */
   return getBatchJobs( 'processing' )
     .then(
       /**

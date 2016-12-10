@@ -22,9 +22,11 @@ var config = {
   },
   cron: {
     schedules: {
-      addpins: '*/11 * * * *',
-      metadata_jobs: '*/3 * * * *',
-      rotate_queued: '*/15 * * * *'
+      addpins: '*/1 * * * *',
+      metadata_jobs: '*/1 * * * *',
+      process_metadata: '*/1 * * * *',
+      rotate_queued_batch: '*/1 * * * *',
+      rotate_queued_metadata: '*/1 * * * *'
     }
   },
   ip_address: process.env.NODE_IP_ADDRESS || '',
@@ -34,7 +36,7 @@ var config = {
   metadata_job: {
     creation_throttle: 50,
     state: {
-      available: [ 'completed', 'errored', 'processing', 'queued' ],
+      available: [ 'completed', 'errored', 'processing', 'queued', 'skipped' ],
       current: 'queued',
       initial: 'queued'
     }

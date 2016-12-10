@@ -75,10 +75,11 @@ function rotateQueuedBatchJob() {
     )
     .then(
       /**
-       * if there is a directory in the processing state - no need to rotate
-       *
-       * if there are no batch job directories in the processing state, get a listing of the
-       * directories in the queued state
+       * if there is a directory in the processing state
+       *   no need to rotate
+       * else if there are no batch job directories in the processing state
+       *   get a listing of the
+       *   directories in the queued state
        *
        * @param {{ directories: string[], files: string[] }} directories_files
        * @returns {Promise.<{ directories: string[], files: string[] }>|undefined}
@@ -93,10 +94,11 @@ function rotateQueuedBatchJob() {
     )
     .then(
       /**
-       * if no batch job directories exist in queued state - nothing to rotate
-       *
-       * if batch job directories exist, set the current and destination directories for the
-       * first batch job
+       * if no batch job directories exist in queued state
+       *   nothing to rotate
+       * else if batch job directories exist
+       *   set the current and destination directories for the
+       *   first batch job
        *
        * @param {{ directories: string[], files: string[] }|undefined} directories_files
        * @returns {undefined}
@@ -117,9 +119,10 @@ function rotateQueuedBatchJob() {
     )
     .then(
       /**
-       * if no current_directory has been set, nothing to rotate
-       *
-       * otherwise, retrieve the current batch job based on the current_directory just set
+       * if no current_directory has been set
+       *   nothing to rotate
+       * else
+       *   retrieve the current batch job based on the current_directory just set
        *
        * @returns {batch_job|undefined}
        */
@@ -157,9 +160,10 @@ function rotateQueuedBatchJob() {
     )
     .then(
       /**
-       * if no current_directory, nothing to rotate
-       *
-       * otherwise move the current_directory to the destination_directory
+       * if no current_directory
+       *   nothing to rotate
+       * else
+       *   move the current_directory to the destination_directory
        *
        * @returns {undefined|Promise.<string>}
        */
