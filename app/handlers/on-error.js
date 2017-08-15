@@ -12,8 +12,13 @@
  * @returns {undefined}
  */
 function onError( error ) {
+  var address = this.address();
   var bind;
-  var port = this.address().port;
+  var port;
+
+  if ( address && address.port ) {
+    port = address.port;
+  }
 
   if ( error.syscall !== 'listen' ) {
     throw error;

@@ -3,24 +3,15 @@
 /**
  * module variables
  */
-var addCurrentItemToPage;
-var lib;
-var updateItemControls;
+var addCurrentItemToPage = require( './../add/add-current-item-to-page' );
+var lib = require( 'node-front-end-lib' );
+var updateItemControls = require( './../update-item-controls' );
 
 /**
- * module dependencies
- */
-addCurrentItemToPage = require( './../add/add-current-item-to-page' );
-lib = require( 'node-front-end-lib' );
-updateItemControls = require( './../update-item-controls' );
-
-/**
- * @typedef {Function} handleGetPinDetails.call
- *
  * @param {XMLHttpRequest} xhr
  * @param {Object} app_data
  */
-module.exports = function handleGetPinDetails( xhr, app_data ) {
+function handleGetPinDetails( xhr, app_data ) {
   var response;
 
   app_data.search.value = '';
@@ -43,4 +34,6 @@ module.exports = function handleGetPinDetails( xhr, app_data ) {
 
   updateItemControls( app_data );
   addCurrentItemToPage( app_data );
-};
+}
+
+module.exports = handleGetPinDetails;

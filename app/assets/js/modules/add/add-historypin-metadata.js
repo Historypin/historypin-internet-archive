@@ -30,7 +30,7 @@ function getContentFromObject( property, hp_item ) {
  * @param {Object} hp_item
  * @param {Object} app_data
  */
-module.exports = function addHistorypinMetadata( hp_item, app_data ) {
+function addHistorypinMetadata( hp_item, app_data ) {
   var html;
   var property;
   var content;
@@ -65,4 +65,6 @@ module.exports = function addHistorypinMetadata( hp_item, app_data ) {
 
   html += '</tbody>';
   app_data.metadata.historypin.innerHTML = html;
-};
+}
+
+module.exports = addHistorypinMetadata;

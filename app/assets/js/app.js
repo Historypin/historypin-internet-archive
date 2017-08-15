@@ -7,7 +7,7 @@ var batch_jobs = require( './pages/batch-jobs' );
 var home = require( './pages/home' );
 var lib = require( 'node-front-end-lib' );
 
-module.exports = function init() {
+(function init() {
   var page;
 
   if ( !lib.validateEnvironment() ) {
@@ -18,4 +18,4 @@ module.exports = function init() {
 
   home( page );
   batch_jobs( page );
-}();
+}());

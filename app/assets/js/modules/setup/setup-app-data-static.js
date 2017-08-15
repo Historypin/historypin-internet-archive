@@ -11,7 +11,7 @@ var handleSubmit = require( './../handle/handle-submit' );
 /**
  * @param {Object} app_data
  */
-module.exports = function setupStaticAppData( app_data ) {
+function setupStaticAppData( app_data ) {
   // api
   app_data.items_per_page_limit = 24;
 
@@ -33,6 +33,9 @@ module.exports = function setupStaticAppData( app_data ) {
 
   // mapping
   getMapping( app_data );
+
+  // message to user
+  app_data.message_to_user = document.getElementById('message-to-user');
 
   // metadata
   app_data.metadata = {};
@@ -80,4 +83,6 @@ module.exports = function setupStaticAppData( app_data ) {
       handleItemControlClick.call( this, evt );
     }
   );
-};
+}
+
+module.exports = setupStaticAppData;

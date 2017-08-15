@@ -7,6 +7,7 @@ var lib = require( 'node-front-end-lib' );
 
 /**
  * @link http://v76-beta-1.historypin-hrd.appspot.com/resources/docs/api/site/items/map/index.html
+ *
  * @returns {string}
  */
 function getUrl( app_data ) {
@@ -19,8 +20,11 @@ function getUrl( app_data ) {
 
 /**
  * @param {Object} app_data
+ *
  * @returns {Promise}
  */
-module.exports = function getProjectPinIds( app_data ) {
+function getProjectPinIds( app_data ) {
   return lib.ajax.get( getUrl( app_data ) );
-};
+}
+
+module.exports = getProjectPinIds;

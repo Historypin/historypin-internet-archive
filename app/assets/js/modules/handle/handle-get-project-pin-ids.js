@@ -6,12 +6,10 @@
 var lib = require('node-front-end-lib');
 
 /**
- * @typedef {Function} handleGetProjectPinIds.call
- *
  * @param xhr
  * @param app_data
  */
-module.exports = function handleGetProjectPinIds( xhr, app_data ) {
+function handleGetProjectPinIds( xhr, app_data ) {
   var response;
 
   app_data.search.value = '';
@@ -36,4 +34,6 @@ module.exports = function handleGetProjectPinIds( xhr, app_data ) {
   if ( typeof response.limit === 'number' && !isNaN( response.limit ) ) {
     app_data.limit = response.limit;
   }
-};
+}
+
+module.exports = handleGetProjectPinIds;

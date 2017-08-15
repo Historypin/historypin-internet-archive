@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * @param {Object} app_data
+ * @param {app_data} app_data
  */
-module.exports = function setupDynamicAppData( app_data ) {
+function setupDynamicAppData( app_data ) {
   // items
   app_data.items = [];
   app_data.current_item_index = 0;
@@ -12,4 +12,6 @@ module.exports = function setupDynamicAppData( app_data ) {
   // setup item control initial state
   app_data.item_control.previous.disabled = true;
   app_data.item_control.next.disabled = true;
-};
+}
+
+module.exports = setupDynamicAppData;

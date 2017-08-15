@@ -1,16 +1,10 @@
 'use strict';
 
 /**
- * module variables
- */
-var lib;
-var updateMetadata;
-
-/**
  * module dependencies
  */
-lib = require( 'node-front-end-lib' );
-updateMetadata = require( './update-metadata' );
+var lib = require( 'node-front-end-lib' );
+var updateMetadata = require( './update-metadata' );
 
 /**
  * @returns {string}
@@ -25,7 +19,7 @@ function getUrl( app_data ) {
 /**
  * @param {Object} app_data
  */
-module.exports = function callApi( app_data ) {
+function callApi( app_data ) {
   var response;
 
   lib.ajax.get( getUrl( app_data ) )
@@ -44,4 +38,6 @@ module.exports = function callApi( app_data ) {
     .catch( function ( err ) {
       console.log( err );
     } );
-};
+}
+
+module.exports = callApi;

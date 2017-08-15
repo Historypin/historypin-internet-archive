@@ -17,10 +17,9 @@ var item_handlers = {
 };
 
 /**
- * @typedef {Function} handleItemControlClick.call
  * @param {Event} evt
  */
-module.exports = function handleItemControlClick( evt ) {
+function handleItemControlClick( evt ) {
   var app_data;
   var button;
   var controlHandler;
@@ -33,4 +32,6 @@ module.exports = function handleItemControlClick( evt ) {
   if ( controlHandler instanceof Function ) {
     controlHandler( app_data );
   }
-};
+}
+
+module.exports = handleItemControlClick;

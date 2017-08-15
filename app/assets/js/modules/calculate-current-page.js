@@ -3,7 +3,7 @@
 /**
  * @param {Object} app_data
  */
-module.exports = function calculateCurrentPage( app_data ) {
+function calculateCurrentPage( app_data ) {
   if ( app_data.current_item_index === 0 ) {
     app_data.current_page = 1;
   } else {
@@ -11,4 +11,6 @@ module.exports = function calculateCurrentPage( app_data ) {
   }
 
   return app_data.current_page;
-};
+}
+
+module.exports = calculateCurrentPage;

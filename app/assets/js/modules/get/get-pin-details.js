@@ -27,6 +27,8 @@ function getUrl( app_data ) {
  * @param {Object} app_data
  * @returns {Promise}
  */
-module.exports = function getPinDetails( app_data ) {
+function getPinDetails( app_data ) {
   return lib.ajax.get( getUrl( app_data ) );
-};
+}
+
+module.exports = getPinDetails;

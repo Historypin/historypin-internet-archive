@@ -3,15 +3,13 @@
 /**
  * module dependencies
  */
-var getMappedMetadata = require(
-  '../../../../helpers/metadata-mapping/get-mapped-metadata'
-);
+var getMappedMetadata = require( '../../../../helpers/metadata-mapping/get-mapped-metadata' );
 
 /**
  * @param hp_item
  * @param app_data
  */
-module.exports = function addInternetArchiveMetadata( hp_item, app_data ) {
+function addInternetArchiveMetadata( hp_item, app_data ) {
   var html;
   var mapped_metadata;
 
@@ -48,4 +46,6 @@ module.exports = function addInternetArchiveMetadata( hp_item, app_data ) {
 
   html += '</tbody>';
   app_data.metadata.internet_archive.innerHTML = html;
-};
+}
+
+module.exports = addInternetArchiveMetadata;

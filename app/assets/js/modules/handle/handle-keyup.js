@@ -1,20 +1,14 @@
 'use strict';
 
 /**
- * module variables
- */
-var lib;
-
-/**
  * module dependencies
  */
-lib = require( 'node-front-end-lib' );
+var lib = require( 'node-front-end-lib' );
 
 /**
- * @typedef {Function} handleKeyUp.call
  * @param {Event} evt
  */
-module.exports = function handleKeyUp( evt ) {
+function handleKeyUp( evt ) {
   var app_data;
 
   app_data = evt.data;
@@ -27,4 +21,6 @@ module.exports = function handleKeyUp( evt ) {
       lib.triggerEvent( 'click', 'MouseEvent', app_data.item_control.next );
       break;
   }
-};
+}
+
+module.exports = handleKeyUp;

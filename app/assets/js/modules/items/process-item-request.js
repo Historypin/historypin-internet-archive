@@ -10,7 +10,7 @@ var updateItemControls = require( './../update-item-controls' );
 /**
  * @param {Object} app_data
  */
-module.exports = function processItemRequest( app_data ) {
+function processItemRequest( app_data ) {
   // get project pin ids
   if ( app_data.current_item_index === app_data.items.length - 1 ) {
     if ( app_data.current_item_index + 1 >= app_data.count ) {
@@ -49,4 +49,6 @@ module.exports = function processItemRequest( app_data ) {
 
   updateItemControls( app_data );
   addCurrentItemToPage( app_data );
-};
+}
+
+module.exports = processItemRequest;

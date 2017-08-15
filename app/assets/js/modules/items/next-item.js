@@ -10,7 +10,7 @@ var processItemRequest = require( './process-item-request' );
  * @param {number} app_data.count
  * @param {number} app_data.current_item_index
  */
-module.exports = function nextItem( app_data ) {
+function nextItem( app_data ) {
   app_data.current_item_index += 1;
 
   if ( app_data.current_item_index === app_data.count ) {
@@ -19,4 +19,6 @@ module.exports = function nextItem( app_data ) {
   }
 
   processItemRequest( app_data );
-};
+}
+
+module.exports = nextItem;

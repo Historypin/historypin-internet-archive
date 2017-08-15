@@ -5,15 +5,15 @@
  */
 var getPinDetails = require( './../get/get-pin-details' );
 var getProjectPinIds = require( './../get/get-project-pin-ids' );
+var handleError = require( './handle-error' );
 var handleGetPinDetails = require( './handle-get-pin-details' );
 var handleGetProjectPinIds = require( './handle-get-project-pin-ids' );
 var setupDynamicAppData = require( './../setup/setup-app-data-dynamic' );
 
 /**
- * @typedef {Function} handleSubmit.call
  * @param {Event} evt
  */
-module.exports = function handleSubmit( evt ) {
+function handleSubmit( evt ) {
   var app_data;
 
   evt.preventDefault();
@@ -23,6 +23,7 @@ module.exports = function handleSubmit( evt ) {
     return;
   }
 
+  app_data.message_to_user.innerHTML = '';
   app_data.search.blur();
   app_data.project = encodeURIComponent( app_data.search.value );
   app_data.item_control.project.innerHTML = app_data.project;
@@ -48,7 +49,9 @@ module.exports = function handleSubmit( evt ) {
     )
     .catch(
       function ( err ) {
-        console.log( err );
+        handleError.call( this, err, app_data );
       }
     );
-};
+}
+
+module.exports = handleSubmit;

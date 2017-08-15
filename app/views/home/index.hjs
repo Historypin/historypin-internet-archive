@@ -1,8 +1,11 @@
 {{> html-open }}
 <h1><a href="/" title="historypin internet archive">historypin internet archive</a></h1>
 <a href="/batch-jobs" title="batch jobs" class="nav">batch jobs</a>
+
 <p>an application that allows one to upload historypin collections to the internet archive</p>
 {{> form-search }}
+
+<p id="message-to-user"></p>
 
 <p id="item-control" class="item-control">
   {{! state-library-of-new-south-wales-s-collection }}
